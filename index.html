@@ -19,7 +19,7 @@
         function getIdentifier() {
             const buf = new Uint32Array(2);
             crypto.getRandomValues(buf);
-            return buf[0].toString(32) + buf[1].toString(32)
+            return buf[0].toString(36) + buf[1].toString(36)
         }
 
         function printNote(str, safe){
