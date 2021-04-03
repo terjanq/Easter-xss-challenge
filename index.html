@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="content-security-policy" content="script-src 'unsafe-inline';">
+</head>
+
+<body>
+    <div id="notesDiv"></div>
+    <iframe id="wafIframe" src="/waf.html" sandbox="allow-scripts"></iframe>
+    <textarea id="textAreaInfo"></textarea><button id="saveButton">save</button>
+    <script>
+        const wafIframe = document.getElementById('wafIframe').contentWindow;
+        const saveButton = document.getElementById('saveButton');
+        const textAreaInfo = document.getElementById('textAreaInfo');
+        const notesDiv = document.getElementById('notesDiv');
+        const identifier = getIdentifier();
+
+        function getIdentifier() {
+            const buf = new Uint32Array(1);
+            crypto.getRandomValues(buf);
+            return buf[0].toString(32)
+        }
+
+        function printNote(str, safe){
+            const div = document.createElement('p');
+            if(safe) div.innerHTML = str;
+            else div.innerText = str;
+            notesDiv.append(div);
+            notesDiv.append(document.createElement('hr'));
+        }   
+
+        function addNote(str){
+            wafIframe.postMessage({
+                identifier,
+                str
+            }, '*');
+        }
+
+        saveButton.onclick = () => {
+            addNote(textAreaInfo.value)
+        }
+
+
+        window.addEventListener('message', e => {
+            if(e.data.type === 'waf'){
+                if(identifier !== e.data.identifier) throw /nice try/
+                printNote(e.data.str, e.data.safe)
+            }
+        });
+
+        window.onload = () => {
+            const welcome = (new URL(location)).searchParams.get('welcome');
+            if(welcome !== null) addNote(welcome);
+        }
+
+    </script>
+</body>
+
+</html>

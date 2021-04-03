@@ -1,0 +1,70 @@
+<script>
+
+onmessage = e => {
+    const identifier = e.data.identifier;
+    e.source.postMessage({
+        type:'waf',
+        identifier,
+        str: e.data.str,
+        safe: (new WAF()).isSafe(e.data.str)
+    },'*');
+}
+
+function WAF() {
+    const forbidden_words = ['<style',  '<embed', '<form', '<input', '<button', '<svg', '<script', '<math', '<base', '<link', 'javascript:', 'data:'];
+    const dangerous_operators = ['"', "'", '`', '(', ')', '{', '}', '[', ']', '=']
+
+    function decodeHTMLEntities(str) {
+        var ta = document.createElement('textarea');
+        ta.innerHTML = str;
+        return ta.value;
+    }
+
+    function onlyASCII(str){
+        return str.replace(/[^\x21-\x7e]/g,'');
+    }
+
+    function firstTag(str){
+        return str.search(/<[a-z]+/i)
+    }
+
+    function firstOnHandler(str){
+        return str.search(/on[a-z]{3,}/i)
+    }
+
+    function firstEqual(str){
+        return str.search(/=/);
+    }
+
+    function hasDangerousOperators(str){
+        return dangerous_operators.some(op=>str.includes(op));
+    }
+
+    function hasForbiddenWord(str){
+        console.log(str)
+        return forbidden_words.some(word=>str.search(new RegExp(word, 'gi'))!==-1);
+    }
+
+    this.isSafe = function(str) {
+        let decoded = onlyASCII(decodeHTMLEntities(str));
+        
+        const first_tag = firstTag(decoded);
+        if(first_tag === -1) return true;
+        decoded = decoded.slice(first_tag);
+        
+        if(hasForbiddenWord(decoded)) return false;
+
+        const first_on_handler = firstOnHandler(decoded);
+        if(first_on_handler === -1) return true;
+        decoded = decoded.slice(first_on_handler)
+
+        const first_equal = firstEqual(decoded);
+        if(first_equal === -1) return true;
+        decoded = decoded.slice(first_equal+1);
+
+        if(hasDangerousOperators(decoded)) return false;
+        return true;
+    }
+}
+
+</script>

