@@ -6,9 +6,11 @@
 </head>
 
 <body>
+    <h2>Your notes</h2>
     <div id="notesDiv"></div>
-    <iframe id="wafIframe" src="/waf.html" sandbox="allow-scripts"></iframe>
+    <h2>Add a new note</h2>
     <textarea id="textAreaInfo"></textarea><button id="saveButton">save</button>
+    <iframe id="wafIframe" src="/waf.html" sandbox="allow-scripts" style="display:none"></iframe>
     <script>
         const wafIframe = document.getElementById('wafIframe').contentWindow;
         const saveButton = document.getElementById('saveButton');
