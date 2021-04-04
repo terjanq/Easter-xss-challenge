@@ -12,7 +12,7 @@ onmessage = e => {
 
 function WAF() {
     const forbidden_words = ['<style', '<iframe', '<embed', '<form', '<input', '<button', '<svg', '<script', '<math', '<base', '<link', 'javascript:', 'data:'];
-    const dangerous_operators = ['$'] || ['"', "'", '`', '(', ')', '{', '}', '[', ']', '=']
+    const dangerous_operators = ['"', "'", '`', '(', ')', '{', '}', '[', ']', '=']
 
     function decodeHTMLEntities(str) {
         var ta = document.createElement('textarea');
