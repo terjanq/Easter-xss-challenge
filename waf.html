@@ -11,8 +11,8 @@ onmessage = e => {
 }
 
 function WAF() {
-    const forbidden_words = ['<style',  '<embed', '<form', '<input', '<button', '<svg', '<script', '<math', '<base', '<link', 'javascript:', 'data:'];
-    const dangerous_operators = ['"', "'", '`', '(', ')', '{', '}', '[', ']', '=']
+    const forbidden_words = ['<style', '<iframe', '<embed', '<form', '<input', '<button', '<svg', '<script', '<math', '<base', '<link', 'javascript:', 'data:'];
+    const dangerous_operators = ['$'] || ['"', "'", '`', '(', ')', '{', '}', '[', ']', '=']
 
     function decodeHTMLEntities(str) {
         var ta = document.createElement('textarea');
@@ -41,7 +41,6 @@ function WAF() {
     }
 
     function hasForbiddenWord(str){
-        console.log(str)
         return forbidden_words.some(word=>str.search(new RegExp(word, 'gi'))!==-1);
     }
 
