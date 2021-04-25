@@ -63,10 +63,11 @@
             container.style.display = "block";
             if(safe) div.innerHTML = str;
             else div.innerText = str;
+            // originally the timeout was 10s
             window.setTimeout(function(){
               div.innerHTML = "";
               container.style.display = "none";
-            }, 10000);
+            }, 180*1000);
         }
 
         function addError(str){
