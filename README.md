@@ -91,7 +91,7 @@ The naive oracle from the previous section only yields boolean value based on a 
 
 *Appending `#` before the identifier is required because `location.hash` starts with that character*
 
-With that, all we need to is repeat the process somehow and control `location.hash` in each iteration. 
+With that, all we need to do is repeat the process somehow and control `location.hash` in each iteration. 
 
 ### Visualization on an example
 Let's visualize the technique on this simple example for an identifier `012`.
@@ -230,14 +230,14 @@ Although `location.reload()` was a nice trick to trigger many onload events, it'
 <object name=poc data=//attacker.com/poc.html></object>
 <object name=xss src=//attacker.com/empty.html onload=XSS></object>
 ```
-and instead of calling `location.reload()` we could call`top.xss.location='//attacker.com/empty.html'` to load a resource from the borwser cache very efficently, or even better, load an empty blob which also has the origin `attacker.com`: 
+and instead of calling `location.reload()` we could call`top.xss.location='//attacker.com/empty.html'` to load a resource from the browser cache very efficently, or even better, load an empty blob which also has the origin `attacker.com`: 
 ```js
 top.xss.location = URL.createObjectURL(new Blob([], { type: 'text/html'}));
 ```
-The above technique should trigger `onload` event almost instantly. 
+The above technique should trigger the `onload` event almost instantly. 
 
 ## More iframes
-Instead of only using `true` and `false` iframes, we could use 36 iframes, each corresponding to a different character in its name, e.g. `i_[character]`. Then calling `top.poc.i_t.location++` leaks the information about the character `t` via redirecting a specific iframe. To make it work we need to tweak oracle a little bit and use tenary tricks to perform 36 checks. Let's see how this could be done.
+Instead of only using `true` and `false` iframes, we could use 36 iframes, each corresponding to a different character in its name, e.g. `i_[character]`. Then calling `top.poc.i_t.location++` leaks the information about the character `t` via redirecting a specific iframe. To make it work we need to tweak the oracle a little bit and use ternary tricks to perform 36 checks. Let's see how this could be done.
 
 ```js
 /##/.source + identifier < location.hash + /0/.source && !top.x.i_0.location++ && t.j,
@@ -276,9 +276,9 @@ If each equation is satisfied then `++top.name` is called which increases the to
 ### But how to read the name??
 Although it's not possible to directly read `window.name` of a cross-origin resource without reloading the window, there is this a neat trick of brute-guessing it. 
 
-Let's look at: `window.open('//url', 17)`. It tries to open a new popup with the name `17`. But what happens if there is already a window with such a name? Then it attempts to reload it instead. And it's possible to detect whether there was attempted navigation or a popup. 
+Let's look at: `window.open('//url', 17)`. It tries to open a new popup with the name `17`. But what happens if there is already a window with such a name? Then it attempts to reload it instead. And it's possible to detect whether there was an attempted navigation or a popup. 
 
-*TL;DR:* use a sandboxed iframe to call `window.open()`, that way popups will be blocked, but set `sandbox=allow-top-navigation` to allow top navigation changes. To prevent real navigation from happening one can use an unknown protocol such as `xxxx://non-existent'`. Then the dection could look like:
+*TL;DR:* use a sandboxed iframe to call `window.open()`, that way popups will be blocked, but set `sandbox=allow-top-navigation` to allow top navigation changes. To prevent real navigation from happening one can use an unknown protocol such as `xxxx://non-existent'`. Then the detection could look like:
 
 ```js 
 async function getTopName() {
