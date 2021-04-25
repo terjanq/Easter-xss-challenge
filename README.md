@@ -98,7 +98,7 @@ Let's visualize the technique on this simple example for an identifier `012`.
 
 ```
 '#012' < '#0' (false)
-'#012' < '#1 (true) -> we can deduce that the first character is therefore 1
+'#012' < '#1 (true) -> we can deduce that the first character is therefore 0
 
 '#012' < '#00' (false)
 '#012' < '#01' (false)
