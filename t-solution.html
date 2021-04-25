@@ -31,6 +31,8 @@
         );
 
         if (top === window) {
+            let startPoc = confirm("Start poc?");
+            if(!startPoc) throw /stopped/;
             name = 0;
             location = top_url + '##'
             throw /stop/

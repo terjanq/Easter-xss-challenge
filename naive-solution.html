@@ -32,6 +32,8 @@
 
   // start payload
   if(top === window){
+      let startPoc = confirm("Start poc?");
+      if(!startPoc) throw /stopped/;
       sessionStorage.setItem('current', 0);
       sessionStorage.setItem('identifier', '');
       sessionStorage.setItem('startTime', Date.now());
