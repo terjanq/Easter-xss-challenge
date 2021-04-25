@@ -41,7 +41,7 @@ onmessage = e => {
 }
 ```
 
-**Exposing the identifier allows forged arbitrary HTML via `safe: true` from any window context.** 
+**Exposing the identifier allows for forgery of arbitrary HTML from any window context.** 
 
 ## Waf bypass
 1. The WAF isn't very restrictive and it allows for injection of `onXXX` events. However, it restricts characters appearing there to ones outside of the following: ``" ' ` [ ] { } ( ) =``. This is intended to prevent arbitrary code execution, though the charset is not that restrictive. 
