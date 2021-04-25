@@ -113,7 +113,7 @@ Let's visualize the technique on this simple example for an identifier `012`.
 With repeating the process we were able to leak the full identifier. 
 
 ## Custom loop
-With the snippet from `//attacker.com/poc.html` we can easily trigger as many iterations as we want by simply doing `location.reload()` after processing the data. That is because with each reload of the object `onload` event triggers in the injected HTML code. All we need is to store already processed data somewhere (e.g. sessionStorage).
+With the snippet from `//attacker.com/poc.html` we can easily trigger as many iterations as we want by simply doing `location.reload()` after processing the data. That is because with each reload of the object the `onload` event triggers in the injected HTML code. All we need is to store already processed data somewhere (e.g. sessionStorage).
 
 ## Hints explained
 Before going to the naive solution, let's have a look at the released hints.
