@@ -2,8 +2,8 @@
 
 ## A quick look
 * Source code consists of two files:
-   * [index.html](https://github.com/terjanq/Easter-challenge-poc/blob/main/index.html)
-   * [waf.html](https://github.com/terjanq/Easter-challenge-poc/blob/main/waf.html)
+   * [index.html](https://github.com/terjanq/Easter-xss-challenge/blob/main/index.html)
+   * [waf.html](https://github.com/terjanq/Easter-xss-challenge/blob/main/waf.html)
 * Users can inject html code via: [?error=&lt;h1>Hello!&lt;/h1>](https://challenge-0421.intigriti.io/?error=%3Ch1%3EHello!%3C/h1%3E)
 * Input is processed via sandboxed subframe [waf.html](https://challenge-0421.intigriti.io/waf.html)
 * Error message disappears after 10 seconds
@@ -11,10 +11,10 @@
 * The goal of the challenge is to trigger an interaction-less XSS on `challenge-0421.intigriti.io`
 
 ## TL;DR solutions
-* Naive solution with 2 iframes: https://easterxss.terjanq.me/naive-solution.html ([source](https://github.com/terjanq/Easter-challenge-poc/blob/main/naive-solution.html)), jump to [*Naive solution*](#naive-solution)
-* 37 iframes and `iframe.location++`: https://easterxss.terjanq.me/l-solution.html ([source](https://github.com/terjanq/Easter-challenge-poc/blob/main/l-solution.html)), jump to [*More iframes*](#more-iframes)
-* 37 iframes and `iframe.name++`: https://easterxss.terjanq.me/n-solution.html ([source](https://github.com/terjanq/Easter-challenge-poc/blob/main/n-solution.html)), jump to [*Let's go faster*](#lets-go-faster)
-* no iframes and `top.name++`: https://easterxss.terjanq.me/t-solution.html ([source](https://github.com/terjanq/Easter-challenge-poc/blob/main/t-solution.html)), jump to [*Dark Arts solution*](#dark-arts-solution)
+* Naive solution with 2 iframes: https://easterxss.terjanq.me/naive-solution.html ([source](https://github.com/terjanq/Easter-xss-challenge/blob/main/naive-solution.html)), jump to [*Naive solution*](#naive-solution)
+* 37 iframes and `iframe.location++`: https://easterxss.terjanq.me/l-solution.html ([source](https://github.com/terjanq/Easter-xss-challenge/blob/main/l-solution.html)), jump to [*More iframes*](#more-iframes)
+* 37 iframes and `iframe.name++`: https://easterxss.terjanq.me/n-solution.html ([source](https://github.com/terjanq/Easter-xss-challenge/blob/main/n-solution.html)), jump to [*Let's go faster*](#lets-go-faster)
+* no iframes and `top.name++`: https://easterxss.terjanq.me/t-solution.html ([source](https://github.com/terjanq/Easter-xss-challenge/blob/main/t-solution.html)), jump to [*Dark Arts solution*](#dark-arts-solution)
 
 *Share your time scores on Twitter!*
 
@@ -250,7 +250,7 @@ The trick is that we have 36 expressions separated with `,` which makes them exe
 
 If the equation `/##/.source+identifier<location.hash+/0/.source` is satisfied then `top.x.i_0.location++` triggers, then `t.j` throws an exception preventing further execution of all the following expressions. Else, the next expression is tested until the equation is satisfied. That way exactly one call is made for every character.
 
-Check out [http://terjanq.me/l-solution.html](http://terjanq.me/l-solution.html) ([source](https://github.com/terjanq/Easter-challenge-poc/blob/main/naive-solution.html)) to see the PoC in action. This solution was enough to solve the challenge while respecting all the rules.
+Check out [http://terjanq.me/l-solution.html](http://terjanq.me/l-solution.html) ([source](https://github.com/terjanq/Easter-xss-challenge/blob/main/naive-solution.html)) to see the PoC in action. This solution was enough to solve the challenge while respecting all the rules.
 
 ## Let's go faster
 The solution with using `location++` is dependent on the network speed and for people with a slower connection, 10 seconds might not be enough to finish execution (though it takes less than 3s for me). To remove network jitter I came up with a neat technique that instead does `name++`. For example, `top.poc.i_3.name++` would change the iframe's name to `NaN`.
@@ -258,7 +258,7 @@ The solution with using `location++` is dependent on the network speed and for p
 ### But how to detect the name change?
 The name change can be detected through repeatedly, for each iframe, checking if every iframe is still accessible via `window['i_[char]']`. If it is not, that means that `top.poc.i_[char].name++` was called. All that is left is to restore the iframe via injecting a new iframe with the original name and remove the changed one for performance benefits. 
 
-This was implemented in [https://easterxss.terjanq.me/n-solution.html](https://easterxss.terjanq.me/n-solution.html) ([source](https://github.com/terjanq/Easter-challenge-poc/blob/main/n-solution.html))
+This was implemented in [https://easterxss.terjanq.me/n-solution.html](https://easterxss.terjanq.me/n-solution.html) ([source](https://github.com/terjanq/Easter-xss-challenge/blob/main/n-solution.html))
 
 ## Dark Arts solution
 It's also possible to solve the challenge without any popups nor iframes. The trick is really neat and relies on smuggling the data into `top.name`. 
@@ -302,4 +302,4 @@ async function getTopName() {
 }
 ```
 
-The full-blown PoC is available here: [https://easterxss.terjanq.me/t-solution.html](https://easterxss.terjanq.me/t-solution.html) ([source](https://github.com/terjanq/Easter-challenge-poc/blob/main/n-solution.html))
+The full-blown PoC is available here: [https://easterxss.terjanq.me/t-solution.html](https://easterxss.terjanq.me/t-solution.html) ([source](https://github.com/terjanq/Easter-xss-challenge/blob/main/n-solution.html))
