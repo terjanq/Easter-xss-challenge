@@ -220,7 +220,7 @@ By putting all together we can draft a simple payload of leaking the identifier.
 </script>
 ```
 
-However, this is slow and might take a few minutes to finish (here with a fast connection it takes 30-60 seconds). But if someone submitted a similar solution, it would most likely be accepted. The above code be accessed here: https://easterxss.terjanq.me/naive-solution.html. 
+However, this is slow and might take a few minutes to finish (here with a fast connection it takes 30-60 seconds). But if someone submitted a similar solution, it would most likely be accepted. The above code can be accessed here: [https://easterxss.terjanq.me/naive-solution.html](https://easterxss.terjanq.me/naive-solution.html). 
 
 The overall goal of the challenge was to improve the efficiency of the naive solution. 
 
@@ -274,9 +274,9 @@ location.hash + /z/.source < /##/.source + identifier && ++top.name
 If each equation is satisfied then `++top.name` is called which increases the top window's name by 1. If we initially assign `window.name=0` then after each iteration, the number will indicate which character was leaked. Then, by repeating the process, we can leak the whole identifier.
 
 ### But how to read the name??
-Although it's not possible to directly read `window.name` of a cross-origin resource without reloading the window, there is this a neat trick of brute-guessing it. 
+Although it's not possible to directly read `window.name` of a cross-origin resource without reloading the window, there is this neat trick of brute-guessing it. 
 
-Let's look at: `window.open('//url', 17)`. It tries to open a new popup with the name `17`. But what happens if there is already a window with such a name? Then it attempts to reload it instead. And it's possible to detect whether there was an attempted navigation or a popup. 
+Let's look at: `window.open('//url', 17)`. It tries to open a new popup with the name `17`. But what happens if there is already a window with such a name? Then it attempts to redirect it instead. And it's possible to detect whether there was an attempted navigation or a popup. 
 
 *TL;DR:* use a sandboxed iframe to call `window.open()`, that way popups will be blocked, but set `sandbox=allow-top-navigation` to allow top navigation changes. To prevent real navigation from happening one can use an unknown protocol such as `xxxx://non-existent'`. Then the detection could look like:
 
