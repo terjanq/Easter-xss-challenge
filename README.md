@@ -11,10 +11,10 @@
 * The goal of the challenge is to trigger an interaction-less XSS on `challenge-0421.intigriti.io`
 
 ## TL;DR solutions
-* Naive solution with 2 iframes: https://easterxss.terjanq.me/naive-solution.html ([source](https://github.com/terjanq/Easter-challenge-poc/blob/main/naive-solution.html)), [jump](#naive-solution)
-* 37 iframes and `iframe.location++`: https://easterxss.terjanq.me/l-solution.html ([source](https://github.com/terjanq/Easter-challenge-poc/blob/main/l-solution.html)), [jump](#more-iframes)
-* 37 iframes and `iframe.name++`: https://easterxss.terjanq.me/n-solution.html ([source](https://github.com/terjanq/Easter-challenge-poc/blob/main/n-solution.html)), [jump](#lets-go-faster)
-* no iframes and `top.name++`: https://easterxss.terjanq.me/t-solution.html ([source](https://github.com/terjanq/Easter-challenge-poc/blob/main/t-solution.html)), [jump](#dark-arts-solution)
+* Naive solution with 2 iframes: https://easterxss.terjanq.me/naive-solution.html ([source](https://github.com/terjanq/Easter-challenge-poc/blob/main/naive-solution.html)), [jump](#naive-solution) to *Naive solution*
+* 37 iframes and `iframe.location++`: https://easterxss.terjanq.me/l-solution.html ([source](https://github.com/terjanq/Easter-challenge-poc/blob/main/l-solution.html)), [jump](#more-iframes) to *More iframes*
+* 37 iframes and `iframe.name++`: https://easterxss.terjanq.me/n-solution.html ([source](https://github.com/terjanq/Easter-challenge-poc/blob/main/n-solution.html)), [jump](#lets-go-faster) to *Let's go faster*
+* no iframes and `top.name++`: https://easterxss.terjanq.me/t-solution.html ([source](https://github.com/terjanq/Easter-challenge-poc/blob/main/t-solution.html)), [jump](#dark-arts-solution) to *Dark Arts solution*
 
 *Share your time scores in the comments!*
 
