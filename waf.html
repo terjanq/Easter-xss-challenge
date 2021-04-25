@@ -1,4 +1,4 @@
-<script>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><script>
 
 onmessage = e => {
     const identifier = e.data.identifier;
@@ -46,11 +46,11 @@ function WAF() {
 
     this.isSafe = function(str) {
         let decoded = onlyASCII(decodeHTMLEntities(str));
-        
+
         const first_tag = firstTag(decoded);
         if(first_tag === -1) return true;
         decoded = decoded.slice(first_tag);
-        
+
         if(hasForbiddenWord(decoded)) return false;
 
         const first_on_handler = firstOnHandler(decoded);
@@ -66,4 +66,4 @@ function WAF() {
     }
 }
 
-</script>
+</script></head><body></body></html>

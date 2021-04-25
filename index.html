@@ -1,22 +1,54 @@
+
 <!DOCTYPE html>
 <html>
-
-<head>
-    <meta charset="utf-8">
-    <title>Easter Waffle Challenge</title>
-</head>
-
-<body>
-    <h2>Your notes</h2>
-    <div id="notesDiv"></div>
-    <h2>Add a new note</h2>
-    <textarea id="textAreaInfo"></textarea><button id="saveButton">save</button>
-    <iframe id="wafIframe" src="/waf.html" sandbox="allow-scripts" style="display:none"></iframe>
-    <script>
+   <head>
+      <title>Intigriti April Challenge</title>
+      <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+      <link rel="stylesheet" type="text/css" href="./style.css" />
+      <meta http-equiv="content-security-policy" content="script-src 'unsafe-inline';">
+   </head>
+   <body>
+      <section id="wrapper">
+      <section id="rules">
+      <div class="card-container error" id="error-container">
+        <div class="card-content" id="error-content">
+            Error: something went wrong. Please try again!
+        </div>
+      </div>
+      <div id="challenge-container" class="card-container">
+         <div class="card-header">
+           <img class="card-avatar" src="./terjanq.png"/>
+           Intigriti's 0421 XSS challenge - by <a target="_blank" href="https://twitter.com/terjanq">@terjanq</a></span></div>
+         <div id="challenge-info" class="card-content">
+            <p>Find a way to execute arbitrary javascript on this page and win Intigriti swag.</p>
+            <b>Rules:</b>
+            <ul>
+               <li>This challenge runs from April 19 until April 25th, 11:59 PM CET.</li>
+               <li>
+                  Out of all correct submissions, we will draw <b>six</b> winners on Monday, April 26th:
+                  <ul>
+                     <li>Three randomly drawn correct submissions</li>
+                     <li>Three best write-ups</li>
+                  </ul>
+               </li>
+               <li>Every winner gets a €50 swag voucher for our <a href="https://swag.intigriti.com" target="_blank">swag shop</a></li>
+               <li>The winners will be announced on our <a href="https://twitter.com/intigriti" target="_blank">Twitter profile</a>.</li>
+               <li>For every 100 likes, we'll add a tip to <a href="https://go.intigriti.com/challenge-tips" target="_blank">announcement tweet</a>.</li>
+            </ul>
+            <b>The solution...</b>
+            <ul>
+               <li>Should work on the latest version of Firefox or Chrome</li>
+               <li>Should <code>alert()</code> the following flag: <code id="flag">flag{THIS_IS_THE_FLAG}</code>.</li>
+               <li>Should leverage a cross site scripting vulnerability on this page.</li>
+               <li>Shouldn't be self-XSS or related to MiTM attacks</li>
+               <li>Should not use any user interaction</li>
+               <li>Should be reported at <a href="https://go.intigriti.com/submit-solution">go.intigriti.com/submit-solution</a></li>
+            </ul>
+          </div>
+      </div>
+      <iframe id="wafIframe" src="./waf.html" sandbox="allow-scripts" style="display:none"></iframe>
+      <script>
         const wafIframe = document.getElementById('wafIframe').contentWindow;
-        const saveButton = document.getElementById('saveButton');
-        const textAreaInfo = document.getElementById('textAreaInfo');
-        const notesDiv = document.getElementById('notesDiv');
         const identifier = getIdentifier();
 
         function getIdentifier() {
@@ -25,43 +57,37 @@
             return buf[0].toString(36) + buf[1].toString(36)
         }
 
-        function printNote(str, safe){
-            const div = document.createElement('p');
+        function htmlError(str, safe){
+            const div = document.getElementById("error-content");
+            const container = document.getElementById("error-container");
+            container.style.display = "block";
             if(safe) div.innerHTML = str;
             else div.innerText = str;
-            notesDiv.append(div);
-            notesDiv.append(document.createElement('hr'));
-            // short lived notes only!
-            // setTimeout(()=>{
-            //     div.remove()
-            // },10000);
-        }   
+            window.setTimeout(function(){
+              div.innerHTML = "";
+              container.style.display = "none";
+            }, 10000);
+        }
 
-        function addNote(str){
+        function addError(str){
             wafIframe.postMessage({
                 identifier,
                 str
             }, '*');
         }
 
-        saveButton.onclick = () => {
-            addNote(textAreaInfo.value)
-        }
-
-
         window.addEventListener('message', e => {
             if(e.data.type === 'waf'){
                 if(identifier !== e.data.identifier) throw /nice try/
-                printNote(e.data.str, e.data.safe)
+                htmlError(e.data.str, e.data.safe)
             }
         });
 
         window.onload = () => {
             const error = (new URL(location)).searchParams.get('error');
-            if(error !== null) addNote(error);
+            if(error !== null) addError(error);
         }
 
     </script>
-</body>
-
+   </body>
 </html>
