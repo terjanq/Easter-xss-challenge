@@ -1,6 +1,9 @@
 # Easter XSS by [@terjanq](https://twitter.com/terjanq)
 
 ## A quick look
+* Source code consists of two files:
+   * [index.html](https://github.com/terjanq/Easter-challenge-poc/blob/main/index.html)
+   * [waf.html](https://github.com/terjanq/Easter-challenge-poc/blob/main/waf.html)
 * Users can inject html code via: [?error=&lt;h1>Hello!&lt;/h1>](https://challenge-0421.intigriti.io/?error=%3Ch1%3EHello!%3C/h1%3E)
 * Input is processed via sandboxed subframe [waf.html](https://challenge-0421.intigriti.io/waf.html)
 * Error message disappears after 10 seconds
