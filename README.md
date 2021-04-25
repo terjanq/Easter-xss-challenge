@@ -16,7 +16,7 @@
 * 37 iframes and `iframe.name++`: https://easterxss.terjanq.me/n-solution.html ([source](https://github.com/terjanq/Easter-challenge-poc/blob/main/n-solution.html)), jump to [*Let's go faster*](#lets-go-faster)
 * no iframes and `top.name++`: https://easterxss.terjanq.me/t-solution.html ([source](https://github.com/terjanq/Easter-challenge-poc/blob/main/t-solution.html)), jump to [*Dark Arts solution*](#dark-arts-solution)
 
-*Share your time scores in the comments!*
+*Share your time scores on Twitter!*
 
 ## How does HTML injection work
 A top window sends untrusted data through `postMessage` communication with a sandboxed `waf.html` iframe.
