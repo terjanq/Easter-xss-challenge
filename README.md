@@ -82,7 +82,7 @@ Then by injecting this onto a challenge page via:
 ></object>
 ```
 
-depending on the result of the comparison, either iframe `i_true` or `i_false` will be reloaded. That is because `top.poc.i_true.location++` will assign a URL `//challenge-0421.intigriti.io/NaN` to the iframe. 
+depending on the result of the comparison, either iframe `i_true` or `i_false` will be reloaded. That is because `top.poc.i_true.location++` will assign the URL `//challenge-0421.intigriti.io/NaN` to the iframe. 
 
 *Note that it is important that the frames are same-origin otherwise the redirect attempt would fail.*
 
@@ -91,7 +91,7 @@ The naive oracle from the previous section only yields boolean value based on a 
 
 *Appending `#` before the identifier is required because `location.hash` starts with that character*
 
-With that, all we need to do is repeat the process somehow and control `location.hash` in each iteration. 
+With that, all we need to do is to repeat the process somehow and control `location.hash` in each iteration. 
 
 ### Visualization on an example
 Let's visualize the technique on this simple example for an identifier `012`.
@@ -113,7 +113,7 @@ Let's visualize the technique on this simple example for an identifier `012`.
 With repeating the process we were able to leak the full identifier. 
 
 ## Custom loop
-With the snippet from `//attacker.com/poc.html` we can easily trigger as many iterations as we want by simply doing `location.reload()` after processing the data. That is because with each reload of the object the `onload` event triggers in the injected HTML code. All we need is to store already processed data somewhere (e.g. sessionStorage).
+With the snippet from `//attacker.com/poc.html` we can easily trigger as many iterations as we want by simply doing `location.reload()` after processing the data. That is because with each reload of the object the `onload` event triggers in the injected HTML code. All we need is storing already processed data somewhere (e.g. sessionStorage).
 
 ## Hints explained
 Before going to the naive solution, let's have a look at the released hints.
@@ -220,7 +220,7 @@ By putting all together we can draft a simple payload of leaking the identifier.
 </script>
 ```
 
-However, this is slow and might take a few minutes to finish (here with a fast connection it takes 30-60 seconds). But if someone submitted a similar solution, it would most likely be accepted. The above code can be accessed here: [https://easterxss.terjanq.me/naive-solution.html](https://easterxss.terjanq.me/naive-solution.html). 
+However, this is slow and might take a few minutes to finish (here with a fast connection it takes 30-60 seconds). But if someone submitted a similar solution, it would most likely be accepted. The above code can be accessed here: [easterxss.terjanq.me/naive-solution.html](https://easterxss.terjanq.me/naive-solution.html). 
 
 The overall goal of the challenge was to improve the efficiency of the naive solution. 
 
@@ -250,15 +250,15 @@ The trick is that we have 36 expressions separated with `,` which makes them exe
 
 If the equation `/##/.source+identifier<location.hash+/0/.source` is satisfied then `top.x.i_0.location++` triggers, then `t.j` throws an exception preventing further execution of all the following expressions. Else, the next expression is tested until the equation is satisfied. That way exactly one call is made for every character.
 
-Check out [http://terjanq.me/l-solution.html](http://terjanq.me/l-solution.html) ([source](https://github.com/terjanq/Easter-xss-challenge/blob/main/naive-solution.html)) to see the PoC in action. This solution was enough to solve the challenge while respecting all the rules.
+Check out [easterxss.terjanq.me/l-solution.html](https://easterxss.terjanq.me/l-solution.html) ([source](https://github.com/terjanq/Easter-xss-challenge/blob/main/naive-solution.html)) to see the PoC in action. This solution was enough to solve the challenge while respecting all the rules.
 
 ## Let's go faster
 The solution with using `location++` is dependent on the network speed and for people with a slower connection, 10 seconds might not be enough to finish execution (though it takes less than 3s for me). To remove network jitter I came up with a neat technique that instead does `name++`. For example, `top.poc.i_3.name++` would change the iframe's name to `NaN`.
 
 ### But how to detect the name change?
-The name change can be detected through repeatedly, for each iframe, checking if every iframe is still accessible via `window['i_[char]']`. If it is not, that means that `top.poc.i_[char].name++` was called. All that is left is to restore the iframe via injecting a new iframe with the original name and remove the changed one for performance benefits. 
+The name change can be detected through repeatedly checking if every iframe is still accessible via `window['i_[char]']`. If it is not, that means that `top.poc.i_[char].name++` was called. All that is left is to restore the iframe via injecting a new iframe with the original name and remove the changed one for performance benefits. 
 
-This was implemented in [https://easterxss.terjanq.me/n-solution.html](https://easterxss.terjanq.me/n-solution.html) ([source](https://github.com/terjanq/Easter-xss-challenge/blob/main/n-solution.html))
+This was implemented in [easterxss.terjanq.me/n-solution.html](https://easterxss.terjanq.me/n-solution.html) ([source](https://github.com/terjanq/Easter-xss-challenge/blob/main/n-solution.html))
 
 ## Dark Arts solution
 It's also possible to solve the challenge without any popups nor iframes. The trick is really neat and relies on smuggling the data into `top.name`. 
@@ -302,4 +302,4 @@ async function getTopName() {
 }
 ```
 
-The full-blown PoC is available here: [https://easterxss.terjanq.me/t-solution.html](https://easterxss.terjanq.me/t-solution.html) ([source](https://github.com/terjanq/Easter-xss-challenge/blob/main/n-solution.html))
+The full-blown PoC is available here: [easterxss.terjanq.me/t-solution.html](https://easterxss.terjanq.me/t-solution.html) ([source](https://github.com/terjanq/Easter-xss-challenge/blob/main/n-solution.html))
