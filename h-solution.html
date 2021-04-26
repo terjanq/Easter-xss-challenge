@@ -40,7 +40,14 @@
         const startTime = Date.now();
 
         async function watchForWidthChange() {
-            let width = top.lload.innerWidth;
+            let width;
+            
+            try{
+                width = top.lload.innerWidth;
+            }catch(e){
+                // not loaded yet
+                setTimeout(watchForWidthChange, 0);
+            }
 
             if (width !== lastValue) {
                 await sleep(60);
