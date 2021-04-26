@@ -11,10 +11,11 @@
 * The goal of the challenge is to trigger an interaction-less XSS on `challenge-0421.intigriti.io`
 
 ## TL;DR solutions
-* Naive solution with 2 iframes: https://easterxss.terjanq.me/naive-solution.html ([source](https://github.com/terjanq/Easter-xss-challenge/blob/main/naive-solution.html)), jump to [*Naive solution*](#naive-solution)
-* 37 iframes and `iframe.location++`: https://easterxss.terjanq.me/l-solution.html ([source](https://github.com/terjanq/Easter-xss-challenge/blob/main/l-solution.html)), jump to [*More iframes*](#more-iframes)
-* 37 iframes and `iframe.name++`: https://easterxss.terjanq.me/n-solution.html ([source](https://github.com/terjanq/Easter-xss-challenge/blob/main/n-solution.html)), jump to [*Let's go faster*](#lets-go-faster)
-* no iframes and `top.name++`: https://easterxss.terjanq.me/t-solution.html ([source](https://github.com/terjanq/Easter-xss-challenge/blob/main/t-solution.html)), jump to [*Dark Arts solution*](#dark-arts-solution)
+* Naive solution with 2 iframes: [easterxss.terjanq.me/naive-solution.html](https://easterxss.terjanq.me/naive-solution.html) ([source](https://github.com/terjanq/Easter-xss-challenge/blob/main/naive-solution.html)), jump to [*Naive solution*](#naive-solution)
+* 37 iframes and `iframe.location++`: [easterxss.terjanq.me/l-solution.html](https://easterxss.terjanq.me/l-solution.html) ([source](https://github.com/terjanq/Easter-xss-challenge/blob/main/l-solution.html)), jump to [*More iframes*](#more-iframes)
+* 37 iframes and `iframe.name++`: [easterxss.terjanq.me/n-solution.html](https://easterxss.terjanq.me/n-solution.html) ([source](https://github.com/terjanq/Easter-xss-challenge/blob/main/n-solution.html)), jump to [*Let's go faster*](#lets-go-faster)
+* no iframes and `top.name++`: [easterxss.terjanq.me/t-solution.html](https://easterxss.terjanq.me/t-solution.html) ([source](https://github.com/terjanq/Easter-xss-challenge/blob/main/t-solution.html)), jump to [*Dark Arts solution*](#dark-arts-solution)
+* no iframes and `object.width++`: [easterxss.terjanq.me/h-solution.html](https://easterxss.terjanq.me/h-solution.html) ([source](https://github.com/terjanq/Easter-xss-challenge/blob/main/h-solution.html)) (it's an optimized version from [@holme_sec](https://twitter.com/holme_sec)), jump to their [*writeup*](https://holme-sec.medium.com/solution-for-terjanq-x-intigritis-0421-challenge-ae68556cfcf1)
 
 *Share your time scores on Twitter!*
 
